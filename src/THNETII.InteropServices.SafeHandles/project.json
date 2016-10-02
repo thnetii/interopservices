@@ -1,0 +1,27 @@
+﻿{
+  "tooling": { "defaultNamespace": "THNETII.InteropServices.SafeHandles" },
+
+  "buildOptions": {
+    "xmlDoc": true
+  },
+
+  "dependencies": {
+  },
+
+  "frameworks": {
+    "net35": {},
+    "net40": {},
+    "net45": { "frameworkAssemblies": { "System.Runtime": "4.0.0.0" } },
+    "net451": { "frameworkAssemblies": { "System.Runtime": "4.0.10.0" } },
+    "net452": { "frameworkAssemblies": { "System.Runtime": "4.0.10.0" } },
+    "net46": { "frameworkAssemblies": { "System.Runtime": "4.0.20.0" } },
+    "net461": { "frameworkAssemblies": { "System.Runtime": "4.0.20.0" } },
+    "netstandard1.1": {
+      "imports": [ "dotnet54" ],
+      "dependencies": {
+        "System.Runtime": "4.1.0-*",
+        "System.Runtime.InteropServices": "4.1.0-*"
+      }
+    }
+  }
+}
