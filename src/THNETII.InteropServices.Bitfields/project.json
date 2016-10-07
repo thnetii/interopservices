@@ -1,0 +1,72 @@
+﻿{
+  "version": "1.0.0-*",
+  "authors": [ "Fredrik Høisæther Rasch" ],
+
+  "tooling": { "defaultNamespace": "THNETII.InteropServices.Bitfields" },
+
+  "buildOptions": {
+    "xmlDoc": true
+  },
+
+  "dependencies": {
+  },
+
+  "frameworks": {
+    "net35": {},
+    "net40": {},
+    "net45": { "frameworkAssemblies": { "System.Runtime": "4.0.0.0" } },
+    "net451": { "frameworkAssemblies": { "System.Runtime": "4.0.10.0" } },
+    "net452": { "frameworkAssemblies": { "System.Runtime": "4.0.10.0" } },
+    "net46": { "frameworkAssemblies": { "System.Runtime": "4.0.20.0" } },
+    "net461": { "frameworkAssemblies": { "System.Runtime": "4.0.20.0" } },
+    "netstandard1.0": {
+      "imports": "dnxcore50",
+      "buildOptions": { "debugType": "portable" },
+      "dependencies": {
+        "System.Runtime": "4.1.0-*"
+      }
+    },
+    "netstandard1.1": {
+      "imports": "dnxcore50",
+      "buildOptions": { "debugType": "portable" },
+      "dependencies": {
+        "System.Runtime": "4.1.0-*"
+      }
+    },
+    "netstandard1.2": {
+      "imports": "dnxcore50",
+      "buildOptions": { "debugType": "portable" },
+      "dependencies": {
+        "System.Runtime": "4.1.0-*"
+      }
+    },
+    "netstandard1.3": {
+      "imports": "dnxcore50",
+      "buildOptions": { "debugType": "portable" },
+      "dependencies": {
+        "System.Runtime": "4.1.0-*"
+      }
+    },
+    "netstandard1.4": {
+      "imports": "dnxcore50",
+      "buildOptions": { "debugType": "portable" },
+      "dependencies": {
+        "System.Runtime": "4.1.0-*"
+      }
+    },
+    "netstandard1.5": {
+      "imports": "dnxcore50",
+      "buildOptions": { "debugType": "portable" },
+      "dependencies": {
+        "System.Runtime": "4.1.0-*"
+      }
+    },
+    "netstandard1.6": {
+      "imports": "dnxcore50",
+      "buildOptions": { "debugType": "portable" },
+      "dependencies": {
+        "System.Runtime": "4.1.0-*"
+      }
+    }
+  }
+}
