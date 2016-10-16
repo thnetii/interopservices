@@ -2,22 +2,14 @@
 {
     public class UInt16Bitfield : BitfieldBase, IBitfield<ushort>
     {
-        private const int typeWidth = sizeof(ushort) * 8;
-        private const uint typeMask = 0xFFFF;
+        public new const int TypeWidth = sizeof(ushort) * 8;
 
-        public override int TypeWidth => typeWidth;
+        public UInt16Bitfield(int fieldWidth) : base(fieldWidth, TypeWidth) { }
 
-        public override uint TypeMask => typeMask;
+        public ushort Get(ushort storage) => (ushort)(storage & FieldMask);
 
-        public UInt16Bitfield(int fieldWidth) : base(fieldWidth) { }
+        public ushort Set(ushort field, ushort storage) => (ushort)((field & FieldMask) | (storage & InvertedMask));
 
-        public ushort Get(ushort storage) => (ushort)(storage & fieldMask);
-
-        public ushort Set(ushort field, ushort storage) => (ushort)((field & fieldMask) | (storage & notMask));
-
-        public void RefSet(ushort field, ref ushort storage)
-        {
-            storage = (ushort)((field & fieldMask) | (storage & notMask));
-        }
+        public void RefSet(ushort field, ref ushort storage) => storage = Set(field, storage);
     }
 }
