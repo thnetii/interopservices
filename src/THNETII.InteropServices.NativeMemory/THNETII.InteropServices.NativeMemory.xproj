@@ -9,8 +9,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>964ABE01-811A-4292-94B6-815724BB0B82</ProjectGuid>
     <RootNamespace>THNETII.InteropServices.NativeMemory</RootNamespace>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(SolutionDir)artifacts\$(Configuration)\$(Platform)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)'=='' ">$(SolutionDir)artifacts\$(Configuration)\$(Platform)\</OutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">.\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>

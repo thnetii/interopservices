@@ -8,8 +8,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>af4833cf-4eb4-4ef0-a08f-afe934003b07</ProjectGuid>
     <RootNamespace>THNETII.InteropServices.Test</RootNamespace>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(SolutionDir)artifacts\$(Configuration)\$(Platform)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)'=='' ">$(SolutionDir)artifacts\$(Configuration)\$(Platform)\</OutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">.\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>

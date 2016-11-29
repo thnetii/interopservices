@@ -9,8 +9,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>35eccc19-6dc6-46da-8d9f-9643db55b5fc</ProjectGuid>
     <RootNamespace>THNETII.InteropServices.SafeHandles</RootNamespace>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(SolutionDir)artifacts\$(Configuration)\$(Platform)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)'=='' ">$(SolutionDir)artifacts\$(Configuration)\$(Platform)\</OutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">.\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>

@@ -9,8 +9,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>69809461-daa5-4016-890d-a34166eccaf4</ProjectGuid>
     <RootNamespace>THNETII.InteropServices.Bitfields</RootNamespace>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(SolutionDir)artifacts\$(Configuration)\$(Platform)\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)'=='' ">$(SolutionDir)artifacts\$(Configuration)\$(Platform)\</OutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">.\obj\</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
