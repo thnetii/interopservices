@@ -2,7 +2,7 @@
 
 namespace THNETII.InteropServices.Test
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public class TestStruct
     {
         public static readonly int SizeOf = Marshal.SizeOf<TestStruct>();
