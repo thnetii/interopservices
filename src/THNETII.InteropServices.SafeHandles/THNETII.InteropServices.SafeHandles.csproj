@@ -5,6 +5,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>THNETII.InteropServices.SafeHandles</AssemblyName>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.2' ">$(PackageTargetFallback);dnxcore50;dotnet5.3;portable-net451+win81</PackageTargetFallback>
+    <BaseIntermediateOutputPath>$(SolutionDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <OutputPath>$(SolutionDir)bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

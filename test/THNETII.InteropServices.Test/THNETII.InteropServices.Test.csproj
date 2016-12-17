@@ -5,6 +5,8 @@
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <AssemblyName>THNETII.InteropServices.Test</AssemblyName>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">$(PackageTargetFallback);dnxcore50;portable-net451+win81</PackageTargetFallback>
+    <BaseIntermediateOutputPath>$(SolutionDir)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <OutputPath>$(SolutionDir)bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
