@@ -7,12 +7,12 @@ namespace THNETII.InteropServices.SafeHandles
     /// <summary>
     /// Represents a safe handle for a native memory segment that contains a continuous array of structure values.
     /// <para>
-    /// <see cref="Int32CastValueArraySafeHandle{T}"/> class maked use of optimized marshaling, by reading the entire memory segment as a sequence of <see cref="int"/> values.
+    /// The <see cref="Int32CastValueArraySafeHandle{T}"/> class maked use of optimized marshaling, by reading the entire memory segment as a sequence of <see cref="int"/> values.
     /// It must therefore be possible to cast <see cref="int"/> values to values of type <typeparamref name="T"/> (if e.g. <typeparamref name="T"/> is an enumeration type.)
     /// </para>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Int32CastValueArraySafeHandle<T> : ValueArraySafeHandle<T> where T : struct
+    public class Int32CastValueArraySafeHandle<T> : Int32ArraySafeHandle where T : struct
     {
         /// <summary>
         /// Initializes a new safe handle with a zero-pointer.
@@ -40,17 +40,6 @@ namespace THNETII.InteropServices.SafeHandles
         /// <exception cref="InvalidOperationException">The handle controlling the native memory has an invalid value.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than <c>0</c> (zero).</exception>
         /// <exception cref="InvalidCastException">An element in the memory segment cannot be cast from <see cref="int"/> to type <typeparamref name="T"/>.</exception>
-        public override T[] MarshalToManagedArray(int length)
-        {
-            if (IsClosed)
-                throw new ObjectDisposedException(nameof(handle));
-            else if (IsInvalid)
-                throw new InvalidOperationException("The native memory handle has an invalid value.");
-            else if (length < 1)
-                return new T[0];
-            var iArray = new int[length];
-            Marshal.Copy(handle, iArray, 0, length);
-            return iArray.Cast<T>().ToArray();
-        }
+        public new T[] MarshalToManagedArray(int length) => base.MarshalToManagedArray(length).Cast<T>().ToArray();
     }
 }
