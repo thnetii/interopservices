@@ -14,13 +14,13 @@ namespace THNETII.InteropServices.SafeHandles
         /// <summary>
         /// Initializes a new safe handle with a zero-pointer.
         /// </summary>
-        protected Int32ArraySafeHandle() : this(IntPtr.Zero, ownsHandle: true) { }
+        protected Int32ArraySafeHandle() : this(IntPtr.Zero) { }
         /// <summary>
         /// Initializes a new safe handle with the specified invalid handle value.
         /// </summary>
         /// <param name="invalidHandleValue">The value of an invalid handle (usually <see cref="IntPtr.Zero"/>).</param>
         /// <param name="ownsHandle"><c>true</c> to reliably let the instance release the handle during the finalization phase; otherwise, <c>false</c> (not recommended).</param>
-        protected Int32ArraySafeHandle(IntPtr invalidHandleValue, bool ownsHandle) : base(invalidHandleValue, ownsHandle) { }
+        protected Int32ArraySafeHandle(IntPtr invalidHandleValue, bool ownsHandle = false) : base(invalidHandleValue, ownsHandle) { }
 
         /// <summary>
         /// Marshals the contents of the native memory segment referred to by this instance into a managed array of <see cref="int"/> values.
