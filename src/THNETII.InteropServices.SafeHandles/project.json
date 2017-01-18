@@ -1,4 +1,7 @@
 ﻿{
+  "version": "1.0.0",
+  "authors": [ "Fredrik Høisæther Rasch" ],
+
   "tooling": { "defaultNamespace": "THNETII.InteropServices.SafeHandles" },
 
   "buildOptions": {
@@ -6,7 +9,7 @@
   },
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0-*"
+    "NETStandard.Library": "1.6.1"
   },
 
   "frameworks": {
@@ -15,6 +18,13 @@
       "buildOptions": { "debugType": "portable" },
       "dependencies": {
       }
+    }
+  },
+
+  "packOptions": {
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/couven92/thnetii-interopservices.git"
     }
   }
 }
