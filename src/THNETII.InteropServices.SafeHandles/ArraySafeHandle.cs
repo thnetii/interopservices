@@ -13,7 +13,7 @@ namespace THNETII.InteropServices.SafeHandles
         /// </summary>
         /// <returns>This overridden implementation of <see cref="MarshalToManagedInstance"/> always throws a <see cref="NotSupportedException"/> instance.</returns>
         /// <exception cref="NotSupportedException">An array handle cannot be marshaled directly to a managed instance.</exception>
-        public override T[] MarshalToManagedInstance() => throw new NotSupportedException($"An array handle cannot be marshaled directly to a managed instance. Use the {nameof(MarshalToManagedArray)} method instead.");
+        public override T[] MarshalToManagedInstance() { throw new NotSupportedException($"An array handle cannot be marshaled directly to a managed instance. Use the {nameof(MarshalToManagedArray)} method instead."); }
 
         public abstract T[] MarshalToManagedArray(int length);
     }
