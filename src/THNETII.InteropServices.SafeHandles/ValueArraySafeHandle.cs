@@ -7,7 +7,7 @@ namespace THNETII.InteropServices.SafeHandles
     /// Represents a safe handle for a native memory segment that contains a continuous array of structure values.
     /// </summary>
     /// <typeparam name="T">The managed type that is stored in the items of the array in native memory.</typeparam>
-    public class ValueArraySafeHandle<T> : SafeHandle<T[]>
+    public class ValueArraySafeHandle<T> : ArraySafeHandle<T>
     {
         /// <summary>
         /// The size, in bytes, occupied by one instance of <typeparamref name="T"/> in native memory.
@@ -28,7 +28,7 @@ namespace THNETII.InteropServices.SafeHandles
         /// <exception cref="ObjectDisposedException">The handle has been closed and the controlled native memory has been released back to the system.</exception>
         /// <exception cref="InvalidOperationException">The handle controlling the native memory has an invalid value.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than <c>0</c> (zero).</exception>
-        public virtual T[] MarshalToManagedArray(int length)
+        public override T[] MarshalToManagedArray(int length)
         {
             if (IsClosed)
                 throw new ObjectDisposedException(nameof(handle));
@@ -42,14 +42,6 @@ namespace THNETII.InteropServices.SafeHandles
                 array[i] = Marshal.PtrToStructure<T>(pItem);
             return array;
         }
-
-        /// <summary>
-        /// Marshals the contents of the native memory segment referred to by this instance into a managed array instance.
-        /// <para><note>The <see cref="ValueArraySafeHandle{T}"/> and its derived types does not support direct marshaling to a managed instance. Use the <see cref="MarshalToManagedArray"/> method instead.</note></para>
-        /// </summary>
-        /// <returns>This overridden implementation of <see cref="MarshalToManagedInstance"/> always throws a <see cref="NotSupportedException"/> instance.</returns>
-        /// <exception cref="NotSupportedException">An array handle cannot be marshaled directly to a managed instance.</exception>
-        public override T[] MarshalToManagedInstance() => throw new NotSupportedException($"An array handle cannot be marshaled directly to a managed instance. Use the {nameof(MarshalToManagedArray)} method instead.");
 
         /// <summary>
         /// Initializes a new Value array safe handle with a zero-pointer.
