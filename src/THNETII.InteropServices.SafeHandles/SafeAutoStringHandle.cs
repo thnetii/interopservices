@@ -2,7 +2,7 @@
 
 namespace THNETII.InteropServices.SafeHandles
 {
-    public abstract class SafeAutoStringHandle : SafeStringHandle
+    public abstract class SafeAutoStringHandle : StringSafeHandle
     {
         protected SafeAutoStringHandle() : this(IntPtr.Zero) { }
         /// <param name="invalidHandleValue">The value of an invalid handle (usually <see cref="IntPtr.Zero"/>).</param>
