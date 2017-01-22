@@ -13,8 +13,8 @@
   },
 
   "frameworks": {
-    "netstandard1.2": {
-      "imports": [ "dnxcore50", "dotnet5.3", "portable-net451+win81" ],
+    "netstandard1.3": {
+      "imports": [ "dnxcore50", "dotnet5.4", "portable-net46+win10" ],
       "buildOptions": { "debugType": "portable" },
       "dependencies": {
       }
