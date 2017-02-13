@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <FileVersion>$(VersionPrefix)</FileVersion>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>THNETII.InteropServices.Test</AssemblyName>
+    <PackageId>THNETII.InteropServices.Test</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <RuntimeFrameworkVersion>1.1.0</RuntimeFrameworkVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50;portable-net451+win81</PackageTargetFallback>
+  </PropertyGroup>
+
+  <Import Project="..\..\common.props" />
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.0.0-preview-20170210-02" />
+    <PackageReference Include="xunit" Version="2.2.0-rc2-build3523" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-rc2-build1249" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\THNETII.InteropServices.NativeMemory\THNETII.InteropServices.NativeMemory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+</Project>
