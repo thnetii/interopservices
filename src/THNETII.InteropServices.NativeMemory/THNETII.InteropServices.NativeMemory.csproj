@@ -1,20 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>0.1.0</VersionPrefix>
-    <FileVersion>$(VersionPrefix)</FileVersion>
+    <OutputType>Library</OutputType>
     <TargetFramework>netstandard1.2</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>THNETII.InteropServices.NativeMemory</AssemblyName>
-    <PackageId>THNETII.InteropServices.NativeMemory</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.3;portable-net451+win81</PackageTargetFallback>
-  </PropertyGroup>
-
-  <Import Project="..\..\common.props" />
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.2' ">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>portable</DebugType>
+
+    <Description></Description>
   </PropertyGroup>
+  
+  <Import Project="..\..\common.props" />
+  
+  <PropertyGroup>
+    <VersionPrefix>0.1.1</VersionPrefix>
+    <FileVersion>$(VersionPrefix)</FileVersion>
+    <AssemblyVersion Condition="'$(BuildNumber)' == ''">$(VersionPrefix)</AssemblyVersion>
+    <AssemblyVersion Condition="'$(BuildNumber)' != ''">$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
+    <VersionSuffix Condition="'$(VersionSuffix)'!='' AND '$(BuildNumber)' != ''">$(VersionSuffix)-$(BuildNumber)</VersionSuffix>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="obj\**\*.*" />
+    <None Remove="bin\**\*.*" />
+  </ItemGroup>
 
 </Project>

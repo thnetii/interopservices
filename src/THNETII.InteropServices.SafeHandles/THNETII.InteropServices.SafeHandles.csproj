@@ -1,20 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <Description></Description>
+  </PropertyGroup>
+
+  <Import Project="..\..\common.props" />
+  
+  <PropertyGroup>
     <VersionPrefix>0.1.0</VersionPrefix>
     <FileVersion>$(VersionPrefix)</FileVersion>
-    <TargetFramework>netstandard1.3</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>THNETII.InteropServices.SafeHandles</AssemblyName>
-    <PackageId>THNETII.InteropServices.SafeHandles</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50;dotnet5.4;portable-net46+win10</PackageTargetFallback>
+    <AssemblyVersion Condition="'$(BuildNumber)' == ''">$(VersionPrefix)</AssemblyVersion>
+    <AssemblyVersion Condition="'$(BuildNumber)' != ''">$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
+    <VersionSuffix Condition="'$(VersionSuffix)'!='' AND '$(BuildNumber)' != ''">$(VersionSuffix)-$(BuildNumber)</VersionSuffix>
   </PropertyGroup>
- 
-  <Import Project="..\..\common.props" />
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="obj\**\*.*" />
+    <None Remove="bin\**\*.*" />
+  </ItemGroup>
 
 </Project>

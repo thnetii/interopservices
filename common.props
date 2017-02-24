@@ -1,17 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Project ToolsVersion="15.0">
-  <PropertyGroup>
+<Project>
+  <PropertyGroup Label="Common Package Metadata">
     <Authors Condition="'$(Authors)'==''">Fredrik Høisæther Rasch</Authors>
     <Product Condition="'$(Product)'==''">TH-NETII InteropServices and P/Invoke libraries</Product>
-    <RepositoryType Condition="'$(RepositoryType)'==''">git</RepositoryType>
-    <RepositoryUrl Condition="'$(RepositoryUrl)'==''">https://github.com/couven92/thnetii-interopservices.git</RepositoryUrl>
     <Company Condition="'$(Company)'==''">TH-NETII Rasch Solutions</Company>
     <Copyright Condition="'$(Copyright)'==''">Written by Fredrik Høisæther Rasch, $([System.DateTime]::Now.Year)</Copyright>
   </PropertyGroup>
-  <PropertyGroup Label="DynamicBuildNumber" Condition="'$(FileVersion)'!=''">
-    <DynamicVersionRevision>$([System.Convert]::ToInt64($([System.IO.File]::GetLastWriteTime($(MSBuildProjectFullPath)).Subtract($([System.DateTime]::Parse('2017-01-01T00:00:00Z'))).TotalHours)))</DynamicVersionRevision>
-    <DynamicVersion>$(FileVersion).$(DynamicVersionRevision)</DynamicVersion>
-    <AssemblyVersion>$(DynamicVersion)</AssemblyVersion>
+  <PropertyGroup Label="Repository Metadata">
+    <RepositoryType Condition="'$(RepositoryType)'==''">git</RepositoryType>
+    <RepositoryUrl Condition="'$(RepositoryUrl)'==''">https://github.com/couven92/thnetii-interopservices.git</RepositoryUrl>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageLicenseUrl>https://github.com/couven92/thnetii-interopservices/raw/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/couven92/thnetii-interopservices</PackageProjectUrl>
   </PropertyGroup>
   <PropertyGroup Label="BasePath">
     <BaseOutputPath>$(SolutionDir)bin\</BaseOutputPath>
