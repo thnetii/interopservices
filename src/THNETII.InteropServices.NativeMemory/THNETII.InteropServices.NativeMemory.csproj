@@ -12,14 +12,7 @@
   </PropertyGroup>
   
   <Import Project="..\..\common.props" />
-  
-  <PropertyGroup>
-    <VersionPrefix>0.1.1</VersionPrefix>
-    <FileVersion>$(VersionPrefix)</FileVersion>
-    <AssemblyVersion Condition="'$(BuildNumber)' == ''">$(VersionPrefix)</AssemblyVersion>
-    <AssemblyVersion Condition="'$(BuildNumber)' != ''">$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
-    <VersionSuffix Condition="'$(VersionSuffix)'!='' AND '$(BuildNumber)' != ''">$(VersionSuffix)-$(BuildNumber)</VersionSuffix>
-  </PropertyGroup>
+  <Import Project="..\..\version.props" />
 
   <ItemGroup>
     <None Remove="obj\**\*.*" />
