@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.SafeHandles
 {
-    public static class WideStringZeroTerminatedSafeHandleExtensions
+    public static class AnsiStringZeroTerminatedSafeHandleExtensions
     {
-        internal static string ReadWideStringZeroTerminated(this SafeHandle safeHandle)
+        internal static string ReadAnsiStringZeroTerminated(this SafeHandle safeHandle)
         {
             if (safeHandle == null)
                 throw new ArgumentNullException(nameof(safeHandle));
@@ -17,13 +17,13 @@ namespace THNETII.InteropServices.SafeHandles
             safeHandle.DangerousAddRef(ref needsSafeHandleRelease);
             try
             {
-                return Marshal.PtrToStringUni(safeHandle.DangerousGetHandle());
+                return Marshal.PtrToStringAnsi(safeHandle.DangerousGetHandle());
             }
             finally { safeHandle.DangerousRelease(); }
         }
 
         public static string ReadValue<THandle>(this THandle safeHandle)
-            where THandle : SafeHandle, ISafeHandleSizeUnawareReadWideStringZeroTerminated
-            => safeHandle.ReadWideStringZeroTerminated();
+            where THandle : SafeHandle, ISafeHandleSizeUnawareReadAnsiStringZeroTerminated
+            => safeHandle.ReadAnsiStringZeroTerminated();
     }
 }
