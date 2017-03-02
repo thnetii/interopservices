@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.SafeHandles
 {
-    public static class WideStringSafeHandleExtensions
+    public static class WideStringZeroTerminatedSafeHandleExtensions
     {
         private static string ReadWideStringZeroTerminated(this SafeHandle safeHandle)
         {
