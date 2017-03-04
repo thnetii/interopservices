@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.SafeHandles
 {
-    public interface ISafeHandleReadableAs<T> { }
+    public interface ISafeHandleReadableAs<out T> { }
 
     public static class SafeHandleExtensions
     {

@@ -32,22 +32,22 @@ namespace THNETII.InteropServices.SafeHandles
             => safeHandle.ReadValue(ptr => MarshalNativeToManaged(ptr, count));
     }
 
-    public class AnyByteArraySafeHandle : AnySafeHandle, ISafeHandleReadableAsByteArray
+    public class ByteArrayAnySafeHandle : AnySafeHandle, ISafeHandleReadableAsByteArray
     {
-        protected AnyByteArraySafeHandle() : base() { }
-        protected AnyByteArraySafeHandle(bool ownsHandle) : base(ownsHandle) { }
-        protected AnyByteArraySafeHandle(IntPtr invalidHandleValue, bool ownsHandle = false) : base(invalidHandleValue, ownsHandle) { }
-        public AnyByteArraySafeHandle(IntPtr invalidHandleValue, SafeHandle owningHandle) : base(invalidHandleValue, owningHandle) { }
+        protected ByteArrayAnySafeHandle() : base() { }
+        protected ByteArrayAnySafeHandle(bool ownsHandle) : base(ownsHandle) { }
+        protected ByteArrayAnySafeHandle(IntPtr invalidHandleValue, bool ownsHandle = false) : base(invalidHandleValue, ownsHandle) { }
+        public ByteArrayAnySafeHandle(IntPtr invalidHandleValue, SafeHandle owningHandle) : base(invalidHandleValue, owningHandle) { }
     }
 
-    public class CoTaskMemByteArraySafeHandle : CoTaskMemSafeHandle, ISafeHandleReadableAsByteArray
+    public class ByteArrayCoTaskMemSafeHandle : CoTaskMemSafeHandle, ISafeHandleReadableAsByteArray
     {
-        public CoTaskMemByteArraySafeHandle(byte[] value) : base(value?.Length ?? throw new ArgumentNullException(nameof(value)))
+        public ByteArrayCoTaskMemSafeHandle(byte[] value) : base(value?.Length ?? throw new ArgumentNullException(nameof(value)))
         {
             Marshal.Copy(source: value, destination: handle, startIndex: 0, length: value.Length);
         }
 
-        public static implicit operator AnyByteArraySafeHandle(CoTaskMemByteArraySafeHandle safeHandle)
-            => safeHandle == null ? null : new AnyByteArraySafeHandle(invalidHandleValue, safeHandle);
+        public static implicit operator ByteArrayAnySafeHandle(ByteArrayCoTaskMemSafeHandle safeHandle)
+            => safeHandle == null ? null : new ByteArrayAnySafeHandle(invalidHandleValue, safeHandle);
     }
 }

@@ -3,22 +3,22 @@ using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.SafeHandles
 {
-    public class AnyGuidSafeHandle : AnySafeHandle, ISafeHandleReadableAsSimpleStructure<Guid>
+    public class GuidAnySafeHandle : AnySafeHandle, ISafeHandleReadableAsSimpleStructure<Guid>
     {
-        protected AnyGuidSafeHandle() : base() { }
-        protected AnyGuidSafeHandle(bool ownsHandle) : base(ownsHandle) { }
-        protected AnyGuidSafeHandle(IntPtr invalidHandleValue, bool ownsHandle = false) : base(invalidHandleValue, ownsHandle) { }
-        public AnyGuidSafeHandle(IntPtr invalidHandleValue, SafeHandle owningHandle) : base(invalidHandleValue, owningHandle) { }
+        protected GuidAnySafeHandle() : base() { }
+        protected GuidAnySafeHandle(bool ownsHandle) : base(ownsHandle) { }
+        protected GuidAnySafeHandle(IntPtr invalidHandleValue, bool ownsHandle = false) : base(invalidHandleValue, ownsHandle) { }
+        public GuidAnySafeHandle(IntPtr invalidHandleValue, SafeHandle owningHandle) : base(invalidHandleValue, owningHandle) { }
     }
 
-    public class CoTaskMemGuidSafeHandle : CoTaskMemSafeHandle, ISafeHandleReadableAsSimpleStructure<Guid>
+    public class GuidCoTaskMemSafeHandle : CoTaskMemSafeHandle, ISafeHandleReadableAsSimpleStructure<Guid>
     {
-        public CoTaskMemGuidSafeHandle(Guid value) : base(SizeOf<Guid>.Value)
+        public GuidCoTaskMemSafeHandle(Guid value) : base(SizeOf<Guid>.Value)
         {
             Marshal.StructureToPtr(value, handle, fDeleteOld: false);
         }
 
-        public static implicit operator AnyGuidSafeHandle(CoTaskMemGuidSafeHandle safeHandle)
-            => safeHandle == null ? null : new AnyGuidSafeHandle(invalidHandleValue, safeHandle);
+        public static implicit operator GuidAnySafeHandle(GuidCoTaskMemSafeHandle safeHandle)
+            => safeHandle == null ? null : new GuidAnySafeHandle(invalidHandleValue, safeHandle);
     }
 }

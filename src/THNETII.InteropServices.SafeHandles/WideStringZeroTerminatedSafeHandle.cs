@@ -15,20 +15,20 @@ namespace THNETII.InteropServices.SafeHandles
             => safeHandle.ReadValue(MarshalNativeToManaged);
     }
 
-    public class AnyWideStringZeroTerminatedSafeHandle : AnySafeHandle, ISafeHandleReadableAsWideStringZeroTerminated
+    public class WideStringZeroTerminatedAnySafeHandle : AnySafeHandle, ISafeHandleReadableAsWideStringZeroTerminated
     {
-        protected AnyWideStringZeroTerminatedSafeHandle() : base() { }
-        protected AnyWideStringZeroTerminatedSafeHandle(bool ownsHandle) : base(ownsHandle) { }
-        protected AnyWideStringZeroTerminatedSafeHandle(IntPtr invalidHandleValue, bool ownsHandle = false) : base(invalidHandleValue, ownsHandle) { }
-        public AnyWideStringZeroTerminatedSafeHandle(IntPtr invalidHandleValue, SafeHandle owningHandle) : base(invalidHandleValue, owningHandle) { }
+        protected WideStringZeroTerminatedAnySafeHandle() : base() { }
+        protected WideStringZeroTerminatedAnySafeHandle(bool ownsHandle) : base(ownsHandle) { }
+        protected WideStringZeroTerminatedAnySafeHandle(IntPtr invalidHandleValue, bool ownsHandle = false) : base(invalidHandleValue, ownsHandle) { }
+        public WideStringZeroTerminatedAnySafeHandle(IntPtr invalidHandleValue, SafeHandle owningHandle) : base(invalidHandleValue, owningHandle) { }
     }
 
-    public class CoTaskMemWideStringZeroTerminatedSafeHandle : CoTaskMemSafeHandle, ISafeHandleReadableAsWideStringZeroTerminated
+    public class WideStringZeroTerminatedCoTaskMemSafeHandle : CoTaskMemSafeHandle, ISafeHandleReadableAsWideStringZeroTerminated
     {
-        public CoTaskMemWideStringZeroTerminatedSafeHandle(string value) : base(Marshal.StringToCoTaskMemUni(value)) { }
+        public WideStringZeroTerminatedCoTaskMemSafeHandle(string value) : base(Marshal.StringToCoTaskMemUni(value)) { }
 
-        public static implicit operator AnyWideStringZeroTerminatedSafeHandle(CoTaskMemWideStringZeroTerminatedSafeHandle safeHandle)
-            => safeHandle == null ? null : new AnyWideStringZeroTerminatedSafeHandle(invalidHandleValue, safeHandle);
+        public static implicit operator WideStringZeroTerminatedAnySafeHandle(WideStringZeroTerminatedCoTaskMemSafeHandle safeHandle)
+            => safeHandle == null ? null : new WideStringZeroTerminatedAnySafeHandle(invalidHandleValue, safeHandle);
     }
 
     public interface ISafeHandleReadableAsWideStringZeroTerminatedArray : ISafeHandleReadableAs<string[]> { }
@@ -46,5 +46,13 @@ namespace THNETII.InteropServices.SafeHandles
         public static string[] ReadValue<THandle>(this THandle safeHandle, int count)
             where THandle : SafeHandle, ISafeHandleReadableAsWideStringZeroTerminatedArray
             => safeHandle.ReadValue(ptr => MarshalNativeToManaged(ptr, count));
+    }
+
+    public class WideStringZeroTerminatedArrayAnySafeHandle : AnySafeHandle, ISafeHandleReadableAsWideStringZeroTerminatedArray
+    {
+        protected WideStringZeroTerminatedArrayAnySafeHandle() : base() { }
+        protected WideStringZeroTerminatedArrayAnySafeHandle(bool ownsHandle) : base(ownsHandle) { }
+        protected WideStringZeroTerminatedArrayAnySafeHandle(IntPtr invalidHandleValue, bool ownsHandle = false) : base(invalidHandleValue, ownsHandle) { }
+        public WideStringZeroTerminatedArrayAnySafeHandle(IntPtr invalidHandleValue, SafeHandle owningHandle) : base(invalidHandleValue, owningHandle) { }
     }
 }

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.SafeHandles
 {
-    public interface ISafeHandleReadableAsSimpleStructure<T> : ISafeHandleReadableAs<T> { }
+    public interface ISafeHandleReadableAsSimpleStructure<out T> : ISafeHandleReadableAs<T> { }
 
     public static class SimpleStructureSafeHandle
     {
