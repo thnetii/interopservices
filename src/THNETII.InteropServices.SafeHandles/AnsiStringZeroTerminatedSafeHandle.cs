@@ -10,8 +10,7 @@ namespace THNETII.InteropServices.SafeHandles
     {
         public static string MarshalNativeToManaged(IntPtr pNativeData) => Marshal.PtrToStringAnsi(pNativeData);
 
-        public static string ReadValue<THandle>(this THandle safeHandle)
-            where THandle : SafeHandle, ISafeHandleReadableAsAnsiStringZeroTerminated
+        public static string ReadValue(this ISafeHandleReadableAsAnsiStringZeroTerminated safeHandle)
             => safeHandle.ReadValue(MarshalNativeToManaged);
     }
 
@@ -27,8 +26,7 @@ namespace THNETII.InteropServices.SafeHandles
                        ;
         }
 
-        public static string[] ReadValue<THandle>(this THandle safeHandle, int count)
-            where THandle : SafeHandle, ISafeHandleReadableAsAnsiStringZeroTerminatedArray
+        public static string[] ReadValue(this ISafeHandleReadableAsAnsiStringZeroTerminatedArray safeHandle, int count)
             => safeHandle.ReadValue(ptr => MarshalNativeToManaged(ptr, count));
     }
 }

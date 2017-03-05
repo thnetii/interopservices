@@ -10,8 +10,7 @@ namespace THNETII.InteropServices.SafeHandles
     {
         public static T MarshalNativeToManaged<T>(IntPtr pNativeData) => Marshal.PtrToStructure<T>(pNativeData);
 
-        public static T ReadValue<THandle, T>(this THandle safeHandle)
-            where THandle : SafeHandle, ISafeHandleReadableAsSimpleStructure<T>
+        public static T ReadValue<T>(this ISafeHandleReadableAsSimpleStructure<T> safeHandle)
             => safeHandle.ReadValue(MarshalNativeToManaged<T>);
     }
 
@@ -30,8 +29,7 @@ namespace THNETII.InteropServices.SafeHandles
             return array;
         }
 
-        public static T[] ReadValue<THandle, T>(this THandle safeHandle, int count)
-            where THandle : SafeHandle, ISafeHandleReadableAsSimpleStructureArray<T>
+        public static T[] ReadValue<T>(this ISafeHandleReadableAsSimpleStructureArray<T> safeHandle, int count)
             => safeHandle.ReadValue(ptr => MarshalNativeToManaged<T>(ptr, count));
     }
 
@@ -47,8 +45,7 @@ namespace THNETII.InteropServices.SafeHandles
                 ;
         }
 
-        public static T[] ReadValue<THandle, T>(this THandle safeHandle, int count)
-            where THandle : SafeHandle, ISafeHandleReadableAsSimpleStructureReferenceArray<T>
+        public static T[] ReadValue<T>(this ISafeHandleReadableAsSimpleStructureReferenceArray<T> safeHandle, int count)
             => safeHandle.ReadValue(ptr => MarshalNativeToManaged<T>(ptr, count));
     }
 }

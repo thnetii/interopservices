@@ -17,8 +17,7 @@ namespace THNETII.InteropServices.SafeHandles
 
         }
 
-        public static double[] ReadValue<THandle>(this THandle safeHandle, int count)
-            where THandle : SafeHandle, ISafeHandleReadableAsDoubleArray
+        public static double[] ReadValue(this ISafeHandleReadableAsDoubleArray safeHandle, int count)
             => safeHandle.ReadValue(ptr => MarshalNativeToManaged(ptr, count));
     }
 }
