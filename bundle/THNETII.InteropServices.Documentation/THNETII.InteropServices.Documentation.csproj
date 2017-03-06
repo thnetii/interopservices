@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net461</TargetFramework>
+    <DebugType>portable</DebugType>
+
+    <Description>TH-NETII InteropServices Documentation Bundle</Description>
+  </PropertyGroup>
+
+  <Import Project="..\..\common.props" />
+  <PropertyGroup Label="BasePath">
+    <BaseOutputPath>$(ProjectDir)bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(ProjectDir)obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <Import Project="..\..\version.props" />
+
+  <ItemGroup>
+    <Compile Remove="obj\**\*.*" />
+    <Compile Remove="bin\**\*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EWSoftware.SHFB" Version="2017.1.28" />
+    <PackageReference Include="EWSoftware.SHFB.NETCore" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\THNETII.InteropServices.Bitfields\THNETII.InteropServices.Bitfields.csproj" />
+    <ProjectReference Include="..\..\src\THNETII.InteropServices.NativeMemory\THNETII.InteropServices.NativeMemory.csproj" />
+    <ProjectReference Include="..\..\src\THNETII.InteropServices.SafeHandles\THNETII.InteropServices.SafeHandles.csproj" />
+  </ItemGroup>
+
+  <Target Name="SHFB" DependsOnTargets="Restore" AfterTargets="Build">
+    <Message Importance="high" Text="NuGetPackageRoot: $(NuGetPackageRoot)" />
+  </Target>
+
+</Project>
