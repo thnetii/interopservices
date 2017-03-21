@@ -7,8 +7,7 @@ namespace THNETII.InteropServices.SafeHandles
 
     public static class SafeHandleExtensions
     {
-        public static T ReadValue<T, THandle>(this THandle safeHandle, Func<IntPtr, T> marshalNativeToManaged)
-            where THandle : ISafeHandleReadableAs<T>
+        public static T ReadValue<T>(this ISafeHandleReadableAs<T> safeHandle, Func<IntPtr, T> marshalNativeToManaged)
         {
             if (safeHandle == null)
                 throw new ArgumentNullException(nameof(safeHandle));
