@@ -1,16 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FD6592C7-7106-44D5-A2D2-EEC705A3DBBB}"
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		common.props = common.props
+		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		README.md = README.md
-		version.props = version.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5C704544-519C-4F65-B09B-FD7718531EA6}"
@@ -92,5 +91,8 @@ Global
 		{4B3ED456-55D6-4CA7-8561-06ABFDEE8D20} = {5C704544-519C-4F65-B09B-FD7718531EA6}
 		{F6F57DFD-BBA9-4DE7-86BB-C2A7B8CC3B9C} = {5C704544-519C-4F65-B09B-FD7718531EA6}
 		{B4E305D2-7093-40C1-962B-45CD6CF1B7F2} = {FC440972-893F-439E-AE8F-F2B4536F63B0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1B21D348-740F-4C22-B147-963ADEE398F2}
 	EndGlobalSection
 EndGlobal

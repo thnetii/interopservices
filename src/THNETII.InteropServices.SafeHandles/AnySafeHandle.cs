@@ -9,8 +9,10 @@ namespace THNETII.InteropServices.SafeHandles
         private SafeHandle owningHandle;
         private readonly bool owningHandleNeedRelease;
 
+        /// <inheritdoc />
         public override bool IsInvalid => handle == invalidHandleValue;
 
+        /// <inheritdoc />
         protected override bool ReleaseHandle()
         {
             if (IsInvalid)
