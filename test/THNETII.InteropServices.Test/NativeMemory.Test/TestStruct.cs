@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace THNETII.InteropServices.Test
+namespace THNETII.InteropServices.NativeMemory.Test
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public class TestStruct

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using THNETII.InteropServices.NativeMemory;
 using Xunit;
 
-namespace THNETII.InteropServices.Test.NativeMemory
+namespace THNETII.InteropServices.NativeMemory.Test
 {
     public class ByValArrayIntPtrTest
     {

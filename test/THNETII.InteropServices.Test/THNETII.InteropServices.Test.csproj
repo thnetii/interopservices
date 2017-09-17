@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <DebugType>portable</DebugType>
+    <RootNamespace>THNETII.InteropServices</RootNamespace>
 
     <Description></Description>
   </PropertyGroup>
