@@ -23,6 +23,7 @@ namespace THNETII.InteropServices.StructMarshal
 
     public class ProxyMarshaler<T> : ICustomMarshaler where T : class, new()
     {
+        private static readonly ProxyMarshaler<T> instance;
         public static int ProxySizeOf { get; }
         public static TypeInfo ProxyTypeInfo { get; }
 
@@ -90,6 +91,7 @@ namespace THNETII.InteropServices.StructMarshal
             var marshalSizeOfGeneric = ProxyMarshaler.MarshalSizeOfGeneric;
             var marhshalSizeOfProxy = marshalSizeOfGeneric.MakeGenericMethod(ProxyTypeInfo);
             ProxySizeOf = (int)marhshalSizeOfProxy.Invoke(obj: null, parameters: null);
+            instance = new ProxyMarshaler<T>();
         }
 
         public void CleanUpNativeData(IntPtr pNativeData)
@@ -124,8 +126,8 @@ namespace THNETII.InteropServices.StructMarshal
         int ICustomMarshaler.GetNativeDataSize() => -1;
 
         /// <summary>
-        /// Creates a singleton instance of the <see cref="ProxyMarshaler{T}"/>
-        /// class.
+        /// Returns a singleton instance of the <see cref="ProxyMarshaler{T}"/>
+        /// capable of marshaling <typeparamref name="T" />.
         /// </summary>
         /// <param name="cookie">Optional marshal cookie. Discarded.</param>
         /// <returns>A new instance of the <see cref="ProxyMarshaler{T}"/> class.</returns>
@@ -135,6 +137,6 @@ namespace THNETII.InteropServices.StructMarshal
         /// uses Attribute reflection instead of marshal cookies.
         /// </remarks>
         [DebuggerStepThrough]
-        public static ProxyMarshaler<T> GetInstance(string cookie = null) => new ProxyMarshaler<T>();
+        public static ProxyMarshaler<T> GetInstance(string cookie = null) => instance;
     }
 }
