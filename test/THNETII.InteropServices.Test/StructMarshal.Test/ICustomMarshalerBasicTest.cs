@@ -80,5 +80,12 @@ namespace THNETII.InteropServices.StructMarshal.Test
             }
             finally { Marshal.FreeCoTaskMem(ptr); }
         }
+
+        [Fact]
+        public void ProxyMarshalerProxySizeOfEqualToDummyStructSizeOf()
+        {
+            var expected = Marshal.SizeOf<DummyStruct>();
+            Assert.Equal(expected, ProxyMarshaler<DummyStruct>.ProxySizeOf);
+        }
     }
 }
