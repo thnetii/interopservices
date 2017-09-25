@@ -1,0 +1,25 @@
+{
+    "version": "0.1.0",
+    "command": "dotnet",
+    "isShellCommand": true,
+    "args": [],
+    "tasks": [
+        {
+            "taskName": "restore",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "build",
+            "isBuildCommand": true,
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "test",
+            "args": [
+                "test/THNETII.InteropServices.Test/THNETII.InteropServices.Test.csproj"
+            ],
+            "isTestCommand": true,
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
