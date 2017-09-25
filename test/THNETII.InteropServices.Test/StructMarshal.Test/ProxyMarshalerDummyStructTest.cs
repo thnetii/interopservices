@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Xunit;
 
 namespace THNETII.InteropServices.StructMarshal.Test
 {
-    public class ICustomMarshalerBasicTest
+    public class ProxyMarshalerDummyStructTest
     {
         [StructLayout(LayoutKind.Sequential)]
         class DummyStruct { public int field; }
@@ -58,7 +58,7 @@ namespace THNETII.InteropServices.StructMarshal.Test
             try
             {
                 //  field in DummyStruct is at offset 0 (it's the first field)
-                var fieldValue = Marshal.ReadInt32(ptr, ofs: 0);
+                var fieldValue = Marshal.ReadInt32(ptr, 0);
                 Assert.Equal(expectedFieldValue, fieldValue);
             }
             finally { marshaler.CleanUpNativeData(ptr); }
@@ -72,7 +72,7 @@ namespace THNETII.InteropServices.StructMarshal.Test
             try
             {
                 //  field in DummyStruct is at offset 0 (it's the first field)
-                Marshal.WriteInt32(ptr, ofs: 0, val: expectedFieldValue);
+                Marshal.WriteInt32(ptr, 0, expectedFieldValue);
                 var marshaler = ProxyMarshaler<DummyStruct>.GetInstance();
                 var instance = marshaler.MarshalNativeToManaged(ptr) as DummyStruct;
                 Assert.NotNull(instance);
@@ -86,6 +86,15 @@ namespace THNETII.InteropServices.StructMarshal.Test
         {
             var expected = Marshal.SizeOf<DummyStruct>();
             Assert.Equal(expected, ProxyMarshaler<DummyStruct>.ProxySizeOf);
+        }
+
+        [Fact]
+        public void ProxyMarshalerProxyTypeHasFieldsEqualToDummyStruct()
+        {
+            var fis = ProxyMarshaler<DummyStruct>.ProxyTypeInfo.GetFields(BindingFlags.Instance);
+            Assert.Equal(1, fis.Length);
+            Assert.Equal(nameof(DummyStruct.field), fis[0].Name);
+            Assert.Equal(typeof(int), fis[0].FieldType);
         }
     }
 }
