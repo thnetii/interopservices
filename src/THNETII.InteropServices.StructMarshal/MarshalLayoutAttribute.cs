@@ -8,7 +8,7 @@ namespace THNETII.InteropServices.StructMarshal
     /// that are used when the <see cref="ProxyMarshaler{T}"/> marshals instances to
     /// and from native memory.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = true, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
     public sealed class MarshalLayoutAttribute : Attribute
     {
         /// <summary>

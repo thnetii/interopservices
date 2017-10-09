@@ -91,7 +91,7 @@ namespace THNETII.InteropServices.StructMarshal.Test
         [Fact]
         public void ProxyMarshalerProxyTypeHasFieldsEqualToDummyStruct()
         {
-            var fis = ProxyMarshaler<DummyStruct>.ProxyTypeInfo.GetFields(BindingFlags.Instance);
+            var fis = ProxyMarshaler<DummyStruct>.ProxyTypeInfo.GetFields(BindingFlags.Instance | BindingFlags.Public);
             Assert.Equal(1, fis.Length);
             Assert.Equal(nameof(DummyStruct.field), fis[0].Name);
             Assert.Equal(typeof(int), fis[0].FieldType);

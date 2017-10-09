@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Xunit;
 
@@ -58,5 +59,19 @@ namespace THNETII.InteropServices.StructMarshal.Test
             var mla = (MarshalLayoutAttribute)sla;
             Assert.Null(mla);
         }
+
+        class TestType1
+        {
+            public int field;
+        }
+
+        [Fact]
+        public void NoMarshalLayoutAttributeResultsInAutoLayoutProxyMarshalerType()
+        {
+            var ti = ProxyMarshaler.CreateMarshalProxyType(typeof(TestType1).GetTypeInfo(), out var _);
+            Assert.Equal(LayoutKind.Auto, ti.StructLayoutAttribute.Value);
+        }
+
+
     }
 }
