@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DebugType>portable</DebugType>
+    <Product>TH-NETII P/Invoke Advanced Structure Marshaler</Product>
+
+    <Description>A custom Marshaler implementation that extends the default .NET Marshal class with functionality to properly marshal pointer references in P/Invoke structures.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Condition="'$(TargetFramework)'=='netstandard2.0'" Include="System.Reflection.Emit" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
