@@ -10,6 +10,14 @@ namespace THNETII.InteropServices.NativeMemory
     [SuppressMessage(category: null, "CA1720", Scope = "Parameter")]
     public static class IntPtrExtensions
     {
+        public static ref T MarshalAsRefStruct<T>(this IntPtr ptr) where T : struct
+        {
+            var cbT = SizeOf<T>.Bytes;
+            Span<T> span;
+            unsafe { span = new Span<T>(ptr.ToPointer(), cbT); }
+            return ref span[0];
+        }
+
         /// <summary>
         /// Marshals the pointer to an array of consecutive structured values in native memory.
         /// </summary>
