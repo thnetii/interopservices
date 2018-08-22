@@ -4,7 +4,7 @@ using Xunit;
 
 namespace THNETII.InteropServices.NativeMemory.Test
 {
-    public class IntPtrExtensionsTest
+    public class IntPtrMarshalRefStructTest
     {
         [Fact]
         public void MarshalRefStructFromNullPointerThrows()
