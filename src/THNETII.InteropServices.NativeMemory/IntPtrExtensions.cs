@@ -10,11 +10,27 @@ namespace THNETII.InteropServices.NativeMemory
     [SuppressMessage(category: null, "CA1720", Scope = "Parameter")]
     public static class IntPtrExtensions
     {
+        /// <summary>
+        /// Marshals the pointer to a writable reference to a struct value.
+        /// </summary>
+        /// <typeparam name="T">The type of the struct to marshal. Must only contain value types fields.</typeparam>
+        /// <param name="ptr">The pointer to marshal.</param>
+        /// <returns>A writable reference to a <typeparamref name="T"/> value.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="T"/> contains reference members or pointers.</exception>
         public static ref T MarshalAsRefStruct<T>(this IntPtr ptr) where T : struct
         {
             var cbT = SizeOf<T>.Bytes;
             Span<T> span;
-            unsafe { span = new Span<T>(ptr.ToPointer(), cbT); }
+            try
+            {
+                unsafe { span = new Span<T>(ptr.ToPointer(), cbT); }
+            }
+            catch (ArgumentException argExcept)
+            {
+#pragma warning disable CA2208 // Instantiate argument exceptions correctly
+                throw new ArgumentException(argExcept.Message, paramName: nameof(T), argExcept);
+#pragma warning restore CA2208 // Instantiate argument exceptions correctly
+            }
             return ref span[0];
         }
 
