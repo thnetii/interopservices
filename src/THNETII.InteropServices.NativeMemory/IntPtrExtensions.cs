@@ -39,7 +39,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// (<c>PWSTR</c>, <c>LPWSTR</c> or <c>wchar_t*</c> in C) and returnes a character-span
         /// over the memory containing the string.
         /// </summary>
-        /// <param name="ptr">The pointer to access. Must not be <see cref="IntPtr.Zero"/>.</param>
+        /// <param name="ptr">The pointer to access.</param>
         /// <returns>
         /// A writable character span that spans from the memory location pointed to by <paramref name="ptr"/> and up to (but not including) the first encountered null character.
         /// </returns>
@@ -48,14 +48,26 @@ namespace THNETII.InteropServices.NativeMemory
         /// As a consequence the span will never be able to span over more than 2^30 characters, as each character
         /// occupies 2 bytes in memory.
         /// </remarks>
-        /// <exception cref="ArgumentNullException"><paramref name="ptr"/> is equal to <see cref="IntPtr.Zero"/>.</exception>
         public static Span<char> AsZeroTerminatedUnicodeSpan(this IntPtr ptr)
         {
             if (ptr == IntPtr.Zero)
-                throw new ArgumentNullException(nameof(ptr));
+                return Span<char>.Empty;
             Span<char> span;
             unsafe { span = new Span<char>(ptr.ToPointer(), int.MaxValue); }
-            var nullIdx = span.IndexOf('\0');
+            int nullIdx;
+            try { nullIdx = span.IndexOf('\0'); }
+#if !NETSTANDARD2_0
+            catch (Exception)
+#else // NETSTANDARD2_0
+            catch (AccessViolationException)
+#endif
+            {
+                for (nullIdx = 0; nullIdx < span.Length; nullIdx++)
+                {
+                    if (span[nullIdx] == '\0')
+                        break;
+                }
+            }
             if (nullIdx < 0)
                 return span;
             return span.Slice(start: 0, length: nullIdx);

@@ -44,10 +44,11 @@ namespace THNETII.InteropServices.NativeMemory.Test
         }
 
         [Fact]
-        public void LPWStrNullAsSpanThrows()
+        public void LPWStrNullAsSpanReturnsEmptySpan()
         {
             var ptr = IntPtr.Zero;
-            Assert.Throws<ArgumentNullException>(() => ptr.AsZeroTerminatedUnicodeSpan());
+            var span = ptr.AsZeroTerminatedUnicodeSpan();
+            Assert.True(span.IsEmpty);
         }
     }
 }
