@@ -12,7 +12,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
             Assert.Throws<NullReferenceException>(() =>
             {
                 var ptr = IntPtr.Zero;
-                var intValue = ptr.MarshalAsRefStruct<int>();
+                var intValue = ptr.AsRefStruct<int>();
             });
         }
 
@@ -22,7 +22,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
             var ptr = IntPtr.Zero;
             Assert.Throws<NullReferenceException>(() =>
             {
-                ref int value = ref ptr.MarshalAsRefStruct<int>();
+                ref int value = ref ptr.AsRefStruct<int>();
                 value = 42;
             });
         }
@@ -45,7 +45,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
                 Marshal.WriteInt32(ptr, ofs: 0, t1);
                 Marshal.WriteInt32(ptr, ofs: sizeof(int), t2);
 
-                var @struct = ptr.MarshalAsRefStruct<PrimitiveValues>();
+                var @struct = ptr.AsRefStruct<PrimitiveValues>();
 
                 Assert.Equal(t1, @struct.t1);
                 Assert.Equal(t2, @struct.t2);
@@ -62,7 +62,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
                 const int t1 = 42;
                 const int t2 = 24;
 
-                ref PrimitiveValues @struct = ref ptr.MarshalAsRefStruct<PrimitiveValues>();
+                ref PrimitiveValues @struct = ref ptr.AsRefStruct<PrimitiveValues>();
                 @struct.t1 = t1;
                 @struct.t2 = t2;
 
@@ -100,7 +100,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
                     Marshal.WriteIntPtr(ptr, ofs: 0, p1);
                     Marshal.WriteIntPtr(ptr, ofs: IntPtr.Size, p2);
 
-                    Assert.Throws<ArgumentException>(() => ptr.MarshalAsRefStruct<MarshaledValues>());
+                    Assert.Throws<ArgumentException>(() => ptr.AsRefStruct<MarshaledValues>());
                 }
                 finally
                 {

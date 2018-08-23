@@ -11,13 +11,13 @@ namespace THNETII.InteropServices.NativeMemory
     public static class IntPtrExtensions
     {
         /// <summary>
-        /// Marshals the pointer to a writable reference to a struct value.
+        /// Interprets the pointer as a read/writable reference to a struct value.
         /// </summary>
         /// <typeparam name="T">The type of the struct to marshal. Must only contain value types fields.</typeparam>
         /// <param name="ptr">The pointer to marshal.</param>
         /// <returns>A writable reference to a <typeparamref name="T"/> value.</returns>
         /// <exception cref="ArgumentException"><typeparamref name="T"/> contains reference members or pointers.</exception>
-        public static ref T MarshalAsRefStruct<T>(this IntPtr ptr) where T : struct
+        public static ref T AsRefStruct<T>(this IntPtr ptr) where T : struct
         {
             var cbT = SizeOf<T>.Bytes;
             Span<T> span;
