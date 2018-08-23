@@ -71,7 +71,9 @@ namespace THNETII.InteropServices.NativeMemory
             }
             if (nullIdx < 0)
                 return span;
+#pragma warning disable PC001 // API not supported on all platforms
             return span.Slice(start: 0, length: nullIdx);
+#pragma warning restore PC001 // API not supported on all platforms
         }
 
         /// <summary>

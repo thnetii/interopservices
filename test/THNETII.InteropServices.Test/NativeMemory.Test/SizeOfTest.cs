@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Xunit;
 
 namespace THNETII.InteropServices.NativeMemory.Test
 {
+    [SuppressMessage("Microsoft.Performance", "CA1812: Avoid uninstantiated internal classes")]
     public class SizeOfTest
     {
         [Fact]
@@ -31,6 +33,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
             _ = SizeOf<MarshalableTestType>.Bytes;
         }
 
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value.
         class NonMarshalableTestType
         {
             public class NestedType
@@ -44,6 +47,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
 
             public int @int;
         }
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value.
 
         [Fact]
         public void SizeOfNonMarshalableTypeThrowsException()
