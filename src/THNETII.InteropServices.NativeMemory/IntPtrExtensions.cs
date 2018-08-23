@@ -55,7 +55,8 @@ namespace THNETII.InteropServices.NativeMemory
             Span<char> span;
             unsafe { span = new Span<char>(ptr.ToPointer(), int.MaxValue); }
             int nullIdx;
-            try { nullIdx = span.IndexOf('\0'); }
+            const char nullChar = '\0';
+            try { nullIdx = span.IndexOf(nullChar); }
 #if !NETSTANDARD2_0
             catch (Exception)
 #else // NETSTANDARD2_0
@@ -64,7 +65,7 @@ namespace THNETII.InteropServices.NativeMemory
             {
                 for (nullIdx = 0; nullIdx < span.Length; nullIdx++)
                 {
-                    if (span[nullIdx] == '\0')
+                    if (span[nullIdx] == nullChar)
                         break;
                 }
             }
