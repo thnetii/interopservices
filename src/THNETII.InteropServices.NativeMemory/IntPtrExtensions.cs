@@ -10,20 +10,14 @@ namespace THNETII.InteropServices.NativeMemory
     [SuppressMessage(category: null, "CA1720", Scope = "Parameter")]
     public static class IntPtrExtensions
     {
-        /// <summary>
-        /// Interprets the pointer as a read/writable reference to a struct value.
-        /// </summary>
-        /// <typeparam name="T">The type of the struct to marshal. Must only contain value types fields.</typeparam>
-        /// <param name="ptr">The pointer to marshal.</param>
-        /// <returns>A writable reference to a <typeparamref name="T"/> value.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="T"/> contains reference members or pointers.</exception>
-        public static ref T AsRefStruct<T>(this IntPtr ptr) where T : struct
+        private static Span<T> AsRefStructSpanUnsafe<T>(this IntPtr ptr, int count)
+            where T : struct
         {
-            var cbT = SizeOf<T>.Bytes;
+            var cbSpan = count * SizeOf<T>.Bytes;
             Span<T> span;
             try
             {
-                unsafe { span = new Span<T>(ptr.ToPointer(), cbT); }
+                unsafe { span = new Span<T>(ptr.ToPointer(), cbSpan); }
             }
             catch (ArgumentException argExcept)
             {
@@ -31,8 +25,34 @@ namespace THNETII.InteropServices.NativeMemory
                 throw new ArgumentException(argExcept.Message, paramName: nameof(T), argExcept);
 #pragma warning restore CA2208 // Instantiate argument exceptions correctly
             }
-            return ref span[0];
+            return span;
         }
+
+        /// <summary>
+        /// Interprets the pointer as a read/writable span over multiple structs of the same type.
+        /// </summary>
+        /// <typeparam name="T">The type of the structs. Must only contain value types fields.</typeparam>
+        /// <param name="ptr">The pointer to marshal.</param>
+        /// <param name="count">The number of struct values in the memory area pointed to by <paramref name="ptr"/>.</param>
+        /// <returns>A writable reference to a <typeparamref name="T"/> value. Returns an empty Span if <paramref name="count"/> is less than <c>1</c>.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="T"/> contains reference members or pointers.</exception>
+        public static Span<T> AsRefStructSpan<T>(this IntPtr ptr, int count)
+            where T : struct
+        {
+            if (count < 1)
+                return Span<T>.Empty;
+            return AsRefStructSpanUnsafe<T>(ptr, count);
+        }
+
+        /// <summary>
+        /// Interprets the pointer as a read/writable reference to a struct value.
+        /// </summary>
+        /// <typeparam name="T">The type of the struct to marshal. Must only contain value types fields.</typeparam>
+        /// <param name="ptr">The pointer to marshal.</param>
+        /// <returns>A writable reference to a <typeparamref name="T"/> value.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="T"/> contains reference members or pointers.</exception>
+        public static ref T AsRefStruct<T>(this IntPtr ptr) where T : struct =>
+            ref AsRefStructSpanUnsafe<T>(ptr, 1)[0];
 
         /// <summary>
         /// Interprets the pointer as a pointer to null-terminated UTF-16 Unicode string
