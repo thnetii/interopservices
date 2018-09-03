@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\THNETII.InteropServices.Bitfield\THNETII.InteropServices.Bitfield.csproj" />
+    <ProjectReference Include="..\..\src\THNETII.InteropServices.Bitwise\THNETII.InteropServices.Bitwise.csproj" />
     <ProjectReference Include="..\..\src\THNETII.InteropServices.NativeMemory\THNETII.InteropServices.NativeMemory.csproj" />
   </ItemGroup>
 

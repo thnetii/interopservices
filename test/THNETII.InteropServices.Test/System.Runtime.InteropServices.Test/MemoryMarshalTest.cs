@@ -5,17 +5,12 @@ namespace System.Runtime.InteropServices.Test
 {
     public class MemoryMarshalTest
     {
-ReadOnlySpan<byte> AsBytes<T>(in T readOnly) where T : unmanaged
-{
-    ReadOnlySpan<T> inSpan;
-    ref T reference = ref Unsafe.AsRef(readOnly);
-    unsafe
-    {
-        var ptr = Unsafe.AsPointer(ref reference);
-        inSpan = new ReadOnlySpan<T>(ptr, length: 1);
-    }
-    return MemoryMarshal.AsBytes(inSpan);
-}
+        ReadOnlySpan<byte> AsBytes<T>(in T readOnly) where T : unmanaged
+        {
+            ref T reference = ref Unsafe.AsRef(readOnly);
+            ReadOnlySpan<T> span = MemoryMarshal.CreateReadOnlySpan(ref reference, length: 1);
+            return MemoryMarshal.AsBytes(span);
+        }
 
         [Fact]
         public void CreateByteSpanOverParameter()
