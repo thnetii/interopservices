@@ -12,12 +12,5 @@ namespace System.Test
 
             Assert.Equal(count, span.Length);
         }
-
-        public void Foo<T>()
-        {
-            var a = new T[1];
-            var span = new Span<T>(a);
-            _ = span.Slice(0, 1);
-        }
     }
 }
