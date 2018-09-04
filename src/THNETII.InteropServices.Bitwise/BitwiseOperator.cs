@@ -10,6 +10,12 @@ namespace THNETII.InteropServices.Bitwise
     [SuppressMessage("Usage", "PC001:API not supported on all platforms")]
     public static class BitwiseOperator
     {
+        /// <summary>
+        /// Returns the bitwise inverse of the specified value.
+        /// </summary>
+        /// <typeparam name="T">The type of the value to invert. Can be any primitive type that can be used in an unmanged context.</typeparam>
+        /// <param name="value">A read-only reference of the value to invert.</param>
+        /// <returns>The bitwise invert of <paramref name="value"/>.</returns>
         public static T Invert<T>(in T value) where T : unmanaged
         {
             if (SpanOverRef.IsCreateSpanSupported)
@@ -47,6 +53,11 @@ namespace THNETII.InteropServices.Bitwise
             }
         }
 
+        /// <summary>
+        /// Returns the bitwise inverse of the specified bytes.
+        /// </summary>
+        /// <param name="span">A read-only span of the bytes to invert.</param>
+        /// <returns>The bitwise invert of <paramref name="span"/> as a heap-allocated array.</returns>
         public static byte[] Invert(ReadOnlySpan<byte> span)
         {
             if (span.IsEmpty)
@@ -54,6 +65,26 @@ namespace THNETII.InteropServices.Bitwise
             var destination = new byte[span.Length];
             InvertUnguarded(destination, span);
             return destination;
+        }
+
+        /// <summary>
+        /// Writes the bitwise inverse of the specified input to the specified destination.
+        /// </summary>
+        /// <param name="destination">The destination to which to write the bitwise inverse.</param>
+        /// <param name="input">The original bytes to invert.</param>
+        /// <remarks>
+        /// If <paramref name="destination"/> and <paramref name="input"/> refer to the same underlying memory location,
+        /// the operation performs the bitwise inverse in-place.
+        /// </remarks>
+        public static void Invert(Span<byte> destination, ReadOnlySpan<byte> input)
+        {
+            if (destination.Length != input.Length)
+            {
+                throw new ArgumentException(
+                    "The destination buffer must be equal in length to the specified input.",
+                    paramName: nameof(destination));
+            }
+            InvertUnguarded(destination, input);
         }
 
         private static void InvertUnguarded(Span<byte> destination, ReadOnlySpan<byte> input)
