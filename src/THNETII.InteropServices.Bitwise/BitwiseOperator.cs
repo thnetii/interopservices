@@ -4,15 +4,47 @@ using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.Bitwise
 {
+    /// <summary>
+    /// Supplies bitwise operators for binary blittable types of any size.
+    /// </summary>
     [SuppressMessage("Usage", "PC001:API not supported on all platforms")]
     public static class BitwiseOperator
     {
-        public static unsafe T Invert<T>(in T value) where T : unmanaged
+        public static T Invert<T>(in T value) where T : unmanaged
         {
-            Span<T> span = stackalloc T[1];
-            span[0] = value;
-            InvertInplace(MemoryMarshal.AsBytes(span));
-            return span[0];
+            if (SpanOverRef.IsCreateSpanSupported)
+            {
+                var inSpan = SpanOverRef.CopyOrSpanReadOnly(value,
+                        out bool isCopy, out Span<T> targetSpan);
+                if (!isCopy)
+                {
+                    unsafe
+                    {
+                        Span<T> stackSpan = stackalloc T[1];
+                        InvertUnguarded(
+                            MemoryMarshal.AsBytes(stackSpan),
+                            MemoryMarshal.AsBytes(inSpan));
+                        return stackSpan[0];
+                    }
+                }
+                else
+                {
+                    InvertUnguarded(
+                        MemoryMarshal.AsBytes(targetSpan),
+                        MemoryMarshal.AsBytes(inSpan));
+                    return targetSpan[0];
+                }
+            }
+            unsafe
+            {
+                Span<T> inSpan = stackalloc T[1];
+                inSpan[0] = value;
+                Span<T> stackSpan = stackalloc T[1];
+                InvertUnguarded(
+                    MemoryMarshal.AsBytes(stackSpan),
+                    MemoryMarshal.AsBytes(inSpan));
+                return stackSpan[0];
+            }
         }
 
         public static byte[] Invert(ReadOnlySpan<byte> span)
@@ -20,48 +52,63 @@ namespace THNETII.InteropServices.Bitwise
             if (span.IsEmpty)
                 return Array.Empty<byte>();
             var destination = new byte[span.Length];
-            span.CopyTo(destination);
-            InvertInplace(destination);
+            InvertUnguarded(destination, span);
             return destination;
         }
 
-        public static void InvertInplace(Span<byte> bytes)
+        private static void InvertUnguarded(Span<byte> destination, ReadOnlySpan<byte> input)
         {
-            if (bytes.Length > sizeof(ulong))
+            switchStart:
+            switch (input.Length)
             {
-                InvertInplace(bytes.Slice(start: 0, length: sizeof(ulong)));
-                InvertInplace(bytes.Slice(start: sizeof(ulong)));
-            }
-            else if (bytes.Length == sizeof(ulong))
-            {
-                ulong inverse = ~MemoryMarshal.Read<ulong>(bytes);
-                MemoryMarshal.Write(bytes, ref inverse);
-            }
-            else if (bytes.Length > sizeof(uint))
-            {
-                InvertInplace(bytes.Slice(start: 0, length: sizeof(uint)));
-                InvertInplace(bytes.Slice(start: sizeof(uint)));
-            }
-            else if (bytes.Length == sizeof(uint))
-            {
-                var inverse = ~MemoryMarshal.Read<uint>(bytes);
-                MemoryMarshal.Write(bytes, ref inverse);
-            }
-            else if (bytes.Length > sizeof(ushort))
-            {
-                InvertInplace(bytes.Slice(start: 0, length: sizeof(ushort)));
-                InvertInplace(bytes.Slice(start: sizeof(ushort)));
-            }
-            else if (bytes.Length == sizeof(ushort))
-            {
-                uint actual = MemoryMarshal.Read<ushort>(bytes);
-                ushort inverse = unchecked((ushort)~actual);
-                MemoryMarshal.Write(bytes, ref inverse);
-            }
-            else if (bytes.Length == sizeof(byte))
-            {
-                uint actual = bytes[0];
-                bytes[0] = unchecked((byte)~actual);
+                default: // > sizeof(ulong)
+                case sizeof(ulong):
+                    {
+                        ulong inverse = ~MemoryMarshal.Read<ulong>(input);
+                        MemoryMarshal.Write(destination, ref inverse);
+
+                        const int sliceStart = sizeof(ulong);
+                        input = input.Slice(sliceStart);
+                        destination = destination.Slice(sliceStart);
+                    }
+                    goto switchStart;
+                case sizeof(uint) + 3:
+                case sizeof(uint) + 2:
+                case sizeof(uint) + 1:
+                case sizeof(uint):
+                    {
+                        uint inverse = ~MemoryMarshal.Read<uint>(input);
+                        MemoryMarshal.Write(destination, ref inverse);
+
+                        const int sliceStart = sizeof(uint);
+                        input = input.Slice(sliceStart);
+                        destination = destination.Slice(sliceStart);
+                    }
+                    goto switchStart;
+                case sizeof(ushort) + 1:
+                case sizeof(ushort):
+                    {
+                        ushort inverse = unchecked((ushort)
+                            ~(uint)MemoryMarshal.Read<ushort>(input));
+                        MemoryMarshal.Write(destination, ref inverse);
+
+                        const int sliceStart = sizeof(ushort);
+                        input = input.Slice(sliceStart);
+                        destination = destination.Slice(sliceStart);
+                    }
+                    goto switchStart;
+                case sizeof(byte):
+                    {
+                        uint value = input[0];
+                        destination[0] = unchecked((byte)~value);
+
+                        const int sliceStart = sizeof(byte);
+                        input = input.Slice(sliceStart);
+                        destination = destination.Slice(sliceStart);
+                    }
+                    goto switchStart;
+                case 0:
+                    return;
             }
         }
 
@@ -101,18 +148,25 @@ namespace THNETII.InteropServices.Bitwise
         public static void XorInplace(Span<byte> assignee, ReadOnlySpan<byte> operand) =>
             PrimitiveBinaryInplace(assignee, operand, PrimitiveXor, PrimitiveXor);
 
-        public static unsafe T PrimitiveBinary<T>(in T left, in T right,
+        public static T PrimitiveBinary<T>(in T left, in T right,
             Func<uint, uint, uint> op32Bits, Func<ulong, ulong, ulong> op64Bits)
             where T : unmanaged
         {
-            Span<T> lSpan = stackalloc T[1];
-            lSpan[0] = left;
-            Span<T> rSpan = stackalloc T[1];
-            rSpan[0] = right;
-            var lBytes = MemoryMarshal.AsBytes(lSpan);
-            var rBytes = MemoryMarshal.AsBytes(rSpan);
-            PrimitiveBinaryUnguarded(lBytes, lBytes, rBytes, op32Bits, op64Bits);
-            return lSpan[0];
+            if (op32Bits == null)
+                throw new ArgumentNullException(nameof(op32Bits));
+            else if (op64Bits == null)
+                throw new ArgumentNullException(nameof(op64Bits));
+            unsafe
+            {
+                Span<T> lSpan = stackalloc T[1];
+                lSpan[0] = left;
+                Span<T> rSpan = stackalloc T[1];
+                rSpan[0] = right;
+                var lBytes = MemoryMarshal.AsBytes(lSpan);
+                var rBytes = MemoryMarshal.AsBytes(rSpan);
+                PrimitiveBinaryUnguarded(lBytes, lBytes, rBytes, op32Bits, op64Bits);
+                return lSpan[0];
+            }
         }
 
         public static byte[] PrimitiveBinary(ReadOnlySpan<byte> left, ReadOnlySpan<byte> right,
@@ -121,10 +175,14 @@ namespace THNETII.InteropServices.Bitwise
             if (left.Length != right.Length)
             {
                 throw new ArgumentException(
-                    message: "The length of the byte-spans passed as operands must be equal in length.",
+                    message: "The operands passed as input must be equal in length.",
                     paramName: nameof(right)
                     );
             }
+            if (op32Bits == null)
+                throw new ArgumentNullException(nameof(op32Bits));
+            else if (op64Bits == null)
+                throw new ArgumentNullException(nameof(op64Bits));
             int length = left.Length;
             if (length == 0)
                 return Array.Empty<byte>();
@@ -139,10 +197,14 @@ namespace THNETII.InteropServices.Bitwise
             if (assignee.Length != operand.Length)
             {
                 throw new ArgumentException(
-                    message: "The length of the byte-spans passed as operands must be equal in length.",
+                    message: $"The {nameof(operand)} must be equal in length to the {nameof(assignee)}.",
                     paramName: nameof(operand)
                     );
             }
+            if (op32Bits == null)
+                throw new ArgumentNullException(nameof(op32Bits));
+            else if (op64Bits == null)
+                throw new ArgumentNullException(nameof(op64Bits));
             PrimitiveBinaryUnguarded(assignee, assignee, operand,
                 op32Bits, op64Bits);
         }
@@ -151,75 +213,70 @@ namespace THNETII.InteropServices.Bitwise
             ReadOnlySpan<byte> left, ReadOnlySpan<byte> right,
             Func<uint, uint, uint> op32Bits, Func<ulong, ulong, ulong> op64Bits)
         {
-            if (destination.Length > sizeof(ulong))
+            switchStart:
+            switch (destination.Length)
             {
-                PrimitiveBinaryUnguarded(destination.Slice(0, length: sizeof(ulong)),
-                    left.Slice(0, length: sizeof(ulong)),
-                    right.Slice(0, length: sizeof(ulong)),
-                    op32Bits, op64Bits
-                    );
-                PrimitiveBinaryUnguarded(destination.Slice(start: sizeof(ulong)),
-                    left.Slice(start: sizeof(ulong)),
-                    right.Slice(start: sizeof(ulong)),
-                    op32Bits, op64Bits
-                    );
-            }
-            else if (destination.Length == sizeof(ulong))
-            {
-                ulong lValue, rValue, andValue;
-                lValue = MemoryMarshal.Read<ulong>(left);
-                rValue = MemoryMarshal.Read<ulong>(right);
-                andValue = op64Bits(lValue, rValue);
-                MemoryMarshal.Write(destination, ref andValue);
-            }
-            else if (destination.Length > sizeof(uint))
-            {
-                PrimitiveBinaryUnguarded(destination.Slice(0, length: sizeof(uint)),
-                    left.Slice(0, length: sizeof(uint)),
-                    right.Slice(0, length: sizeof(uint)),
-                    op32Bits, op64Bits
-                    );
-                PrimitiveBinaryUnguarded(destination.Slice(start: sizeof(uint)),
-                    left.Slice(start: sizeof(uint)),
-                    right.Slice(start: sizeof(uint)),
-                    op32Bits, op64Bits
-                    );
-            }
-            else if (destination.Length == sizeof(uint))
-            {
-                uint lValue, rValue, andValue;
-                lValue = MemoryMarshal.Read<uint>(left);
-                rValue = MemoryMarshal.Read<uint>(right);
-                andValue = op32Bits(lValue, rValue);
-                MemoryMarshal.Write(destination, ref andValue);
-            }
-            else if (destination.Length > sizeof(ushort))
-            {
-                PrimitiveBinaryUnguarded(destination.Slice(0, length: sizeof(ushort)),
-                    left.Slice(0, length: sizeof(ushort)),
-                    right.Slice(0, length: sizeof(ushort)),
-                    op32Bits, op64Bits
-                    );
-                PrimitiveBinaryUnguarded(destination.Slice(start: sizeof(ushort)),
-                    left.Slice(start: sizeof(ushort)),
-                    right.Slice(start: sizeof(ushort)),
-                    op32Bits, op64Bits
-                    );
-            }
-            else if (destination.Length == sizeof(ushort))
-            {
-                uint lValue, rValue;
-                lValue = MemoryMarshal.Read<ushort>(left);
-                rValue = MemoryMarshal.Read<ushort>(right);
-                ushort andValue = unchecked((ushort)op32Bits(lValue, rValue));
-                MemoryMarshal.Write(destination, ref andValue);
-            }
-            else if (destination.Length == sizeof(byte))
-            {
-                uint lValue, rValue;
-                lValue = left[0];
-                rValue = right[0];
-                destination[0] = unchecked((byte)op32Bits(lValue, rValue));
+                default: // > sizeof(ulong)
+                case sizeof(ulong):
+                    {
+                        ulong opResult = op64Bits(
+                            MemoryMarshal.Read<ulong>(left),
+                            MemoryMarshal.Read<ulong>(right)
+                            );
+                        MemoryMarshal.Write(destination, ref opResult);
+
+                        const int sliceStart = sizeof(ulong);
+                        left = left.Slice(start: sliceStart);
+                        right = right.Slice(start: sliceStart);
+                        destination = destination.Slice(start: sliceStart);
+                    }
+                    goto switchStart;
+                case sizeof(uint) + 3:
+                case sizeof(uint) + 2:
+                case sizeof(uint) + 1:
+                case sizeof(uint):
+                    {
+                        uint opResult = op32Bits(
+                            MemoryMarshal.Read<uint>(left),
+                            MemoryMarshal.Read<uint>(right)
+                            );
+                        MemoryMarshal.Write(destination, ref opResult);
+
+                        const int sliceStart = sizeof(uint);
+                        left = left.Slice(start: sliceStart);
+                        right = right.Slice(start: sliceStart);
+                        destination = destination.Slice(start: sliceStart);
+                    }
+                    goto switchStart;
+                case sizeof(ushort) + 1:
+                case sizeof(ushort):
+                    {
+                        ushort opResult = unchecked((ushort)op32Bits(
+                            MemoryMarshal.Read<ushort>(left),
+                            MemoryMarshal.Read<ushort>(right)
+                            ));
+                        MemoryMarshal.Write(destination, ref opResult);
+
+                        const int sliceStart = sizeof(ushort);
+                        left = left.Slice(start: sliceStart);
+                        right = right.Slice(start: sliceStart);
+                        destination = destination.Slice(start: sliceStart);
+                    }
+                    goto switchStart;
+                case sizeof(byte):
+                    {
+                        destination[0] = unchecked((byte)op32Bits(
+                            left[0], right[0]
+                            ));
+
+                        const int sliceStart = sizeof(byte);
+                        left = left.Slice(start: sliceStart);
+                        right = right.Slice(start: sliceStart);
+                        destination = destination.Slice(start: sliceStart);
+                    }
+                    goto switchStart;
+                case 0:
+                    return;
             }
         }
     }

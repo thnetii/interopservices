@@ -121,5 +121,25 @@ namespace THNETII.InteropServices.Bitwise.Test
             Assert.Equal(unchecked(-1L), inverted.f1);
             Assert.Equal(unchecked((byte)0xFF), inverted.f2);
         }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(11)]
+        [InlineData(12)]
+        public void InvertDefaultByteArrayWithLength(int length)
+        {
+            var bytes = new byte[length];
+            var inverted = BitwiseOperator.Invert(bytes);
+            Assert.All(inverted, b => Assert.Equal<byte>(0xFF, b));
+        }
     }
 }
