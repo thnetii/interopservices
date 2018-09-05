@@ -184,6 +184,13 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt64Unguarded(offset: 0, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="byte"/> value where the specified number of the
+        /// higher bits are set. The remaining lower bits are unset.
+        /// </summary>
+        /// <param name="count">The number of high bits to set. Must not exceed the number of available bits in a <see cref="byte"/> value.</param>
+        /// <returns>A <see cref="byte"/> with the higher <paramref name="count"/> bits set.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or greater than the number of bits in a <see cref="byte"/> value.</exception>
         public static byte HigherBitsUInt8(int count)
         {
             const int bytes = sizeof(byte);
@@ -192,6 +199,13 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt8Unguarded(offset: bits - count, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="ushort"/> value where the specified number of the
+        /// higher bits are set. The remaining lower bits are unset.
+        /// </summary>
+        /// <param name="count">The number of high bits to set. Must not exceed the number of available bits in a <see cref="ushort"/> value.</param>
+        /// <returns>A <see cref="ushort"/> with the higher <paramref name="count"/> bits set.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or greater than the number of bits in a <see cref="ushort"/> value.</exception>
         public static ushort HigherBitsUInt16(int count)
         {
             const int bytes = sizeof(ushort);
@@ -200,6 +214,13 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt16Unguarded(offset: bits - count, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="uint"/> value where the specified number of the
+        /// higher bits are set. The remaining lower bits are unset.
+        /// </summary>
+        /// <param name="count">The number of high bits to set. Must not exceed the number of available bits in a <see cref="uint"/> value.</param>
+        /// <returns>A <see cref="uint"/> with the higher <paramref name="count"/> bits set.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or greater than the number of bits in a <see cref="uint"/> value.</exception>
         public static uint HigherBitsUInt32(int count)
         {
             const int bytes = sizeof(uint);
@@ -208,6 +229,13 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt32Unguarded(offset: bits - count, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="ulong"/> value where the specified number of the
+        /// higher bits are set. The remaining lower bits are unset.
+        /// </summary>
+        /// <param name="count">The number of high bits to set. Must not exceed the number of available bits in a <see cref="ulong"/> value.</param>
+        /// <returns>A <see cref="ulong"/> with the higher <paramref name="count"/> bits set.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or greater than the number of bits in a <see cref="ulong"/> value.</exception>
         public static ulong HigherBitsUInt64(int count)
         {
             const int bytes = sizeof(ulong);
@@ -216,6 +244,13 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt64Unguarded(offset: bits - count, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="sbyte"/> value where the specified number of the
+        /// higher bits are set. The remaining lower bits are unset.
+        /// </summary>
+        /// <param name="count">The number of high bits to set. Must not exceed the number of available bits in a <see cref="sbyte"/> value.</param>
+        /// <returns>A <see cref="sbyte"/> with the higher <paramref name="count"/> bits set.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or greater than the number of bits in a <see cref="sbyte"/> value.</exception>
         public static sbyte HigherBitsInt8(int count)
         {
             const int bytes = sizeof(sbyte);
@@ -224,6 +259,13 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt8Unguarded(offset: bits - count, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="short"/> value where the specified number of the
+        /// higher bits are set. The remaining lower bits are unset.
+        /// </summary>
+        /// <param name="count">The number of high bits to set. Must not exceed the number of available bits in a <see cref="short"/> value.</param>
+        /// <returns>A <see cref="short"/> with the higher <paramref name="count"/> bits set.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or greater than the number of bits in a <see cref="short"/> value.</exception>
         public static short HigherBitsInt16(int count)
         {
             const int bytes = sizeof(short);
@@ -232,6 +274,13 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt16Unguarded(offset: bits - count, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="int"/> value where the specified number of the
+        /// higher bits are set. The remaining lower bits are unset.
+        /// </summary>
+        /// <param name="count">The number of high bits to set. Must not exceed the number of available bits in a <see cref="int"/> value.</param>
+        /// <returns>A <see cref="int"/> with the higher <paramref name="count"/> bits set.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or greater than the number of bits in a <see cref="int"/> value.</exception>
         public static int HigherBitsInt32(int count)
         {
             const int bytes = sizeof(int);
@@ -240,6 +289,13 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt32Unguarded(offset: bits - count, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="long"/> value where the specified number of the
+        /// higher bits are set. The remaining lower bits are unset.
+        /// </summary>
+        /// <param name="count">The number of high bits to set. Must not exceed the number of available bits in a <see cref="long"/> value.</param>
+        /// <returns>A <see cref="long"/> with the higher <paramref name="count"/> bits set.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or greater than the number of bits in a <see cref="long"/> value.</exception>
         public static long HigherBitsInt64(int count)
         {
             const int bytes = sizeof(long);
@@ -248,6 +304,33 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt64Unguarded(offset: bits - count, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="byte"/> value where the specified number of bits
+        /// starting from the specified low-end bit offset are set. All remaining
+        /// bits are unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The number of bits from the low-end at which to start setting bits.
+        /// Must not exceed the number of available bits in a <see cref="byte"/> value.
+        /// </param>
+        /// <param name="count">
+        /// The number of bits to set.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="byte"/> value with <paramref name="count"/> bits set,
+        /// starting with the lowest bits set at the 0-based index indicated by
+        /// <paramref name="offset"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number of
+        /// bits in a <see cref="long"/> value.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> is negative or greater than the difference
+        /// between the number of bits in a <see cref="long"/> value and
+        /// <paramref name="offset"/>.
+        /// </exception>
         public static byte OffsetBitsUInt8(int offset, int count)
         {
             ThrowHelpers.ThrowForOffset(offset, sizeof(byte));
@@ -255,6 +338,33 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt8Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="ushort"/> value where the specified number of bits
+        /// starting from the specified low-end bit offset are set. All remaining
+        /// bits are unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The number of bits from the low-end at which to start setting bits.
+        /// Must not exceed the number of available bits in a <see cref="ushort"/> value.
+        /// </param>
+        /// <param name="count">
+        /// The number of bits to set.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="ushort"/> value with <paramref name="count"/> bits set,
+        /// starting with the lowest bits set at the 0-based index indicated by
+        /// <paramref name="offset"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number of
+        /// bits in a <see cref="ushort"/> value.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> is negative or greater than the difference
+        /// between the number of bits in a <see cref="ushort"/> value and
+        /// <paramref name="offset"/>.
+        /// </exception>
         public static ushort OffsetBitsUInt16(int offset, int count)
         {
             ThrowHelpers.ThrowForOffset(offset, sizeof(ushort));
@@ -262,6 +372,33 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt16Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="uint"/> value where the specified number of bits
+        /// starting from the specified low-end bit offset are set. All remaining
+        /// bits are unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The number of bits from the low-end at which to start setting bits.
+        /// Must not exceed the number of available bits in a <see cref="uint"/> value.
+        /// </param>
+        /// <param name="count">
+        /// The number of bits to set.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="uint"/> value with <paramref name="count"/> bits set,
+        /// starting with the lowest bits set at the 0-based index indicated by
+        /// <paramref name="offset"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number of
+        /// bits in a <see cref="uint"/> value.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> is negative or greater than the difference
+        /// between the number of bits in a <see cref="uint"/> value and
+        /// <paramref name="offset"/>.
+        /// </exception>
         public static uint OffsetBitsUInt32(int offset, int count)
         {
             ThrowHelpers.ThrowForOffset(offset, sizeof(uint));
@@ -269,6 +406,33 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt32Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="ulong"/> value where the specified number of bits
+        /// starting from the specified low-end bit offset are set. All remaining
+        /// bits are unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The number of bits from the low-end at which to start setting bits.
+        /// Must not exceed the number of available bits in a <see cref="ulong"/> value.
+        /// </param>
+        /// <param name="count">
+        /// The number of bits to set.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="ulong"/> value with <paramref name="count"/> bits set,
+        /// starting with the lowest bits set at the 0-based index indicated by
+        /// <paramref name="offset"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number of
+        /// bits in a <see cref="ulong"/> value.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> is negative or greater than the difference
+        /// between the number of bits in a <see cref="ulong"/> value and
+        /// <paramref name="offset"/>.
+        /// </exception>
         public static ulong OffsetBitsUInt64(int offset, int count)
         {
             ThrowHelpers.ThrowForOffset(offset, sizeof(ulong));
@@ -276,6 +440,33 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt64Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="sbyte"/> value where the specified number of bits
+        /// starting from the specified low-end bit offset are set. All remaining
+        /// bits are unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The number of bits from the low-end at which to start setting bits.
+        /// Must not exceed the number of available bits in a <see cref="sbyte"/> value.
+        /// </param>
+        /// <param name="count">
+        /// The number of bits to set.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="sbyte"/> value with <paramref name="count"/> bits set,
+        /// starting with the lowest bits set at the 0-based index indicated by
+        /// <paramref name="offset"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number of
+        /// bits in a <see cref="sbyte"/> value.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> is negative or greater than the difference
+        /// between the number of bits in a <see cref="sbyte"/> value and
+        /// <paramref name="offset"/>.
+        /// </exception>
         public static sbyte OffsetBitsInt8(int offset, int count)
         {
             ThrowHelpers.ThrowForOffset(offset, sizeof(sbyte));
@@ -283,6 +474,33 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt8Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="short"/> value where the specified number of bits
+        /// starting from the specified low-end bit offset are set. All remaining
+        /// bits are unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The number of bits from the low-end at which to start setting bits.
+        /// Must not exceed the number of available bits in a <see cref="short"/> value.
+        /// </param>
+        /// <param name="count">
+        /// The number of bits to set.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="short"/> value with <paramref name="count"/> bits set,
+        /// starting with the lowest bits set at the 0-based index indicated by
+        /// <paramref name="offset"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number of
+        /// bits in a <see cref="short"/> value.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> is negative or greater than the difference
+        /// between the number of bits in a <see cref="short"/> value and
+        /// <paramref name="offset"/>.
+        /// </exception>
         public static short OffsetBitsInt16(int offset, int count)
         {
             ThrowHelpers.ThrowForOffset(offset, sizeof(short));
@@ -290,6 +508,33 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt16Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="int"/> value where the specified number of bits
+        /// starting from the specified low-end bit offset are set. All remaining
+        /// bits are unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The number of bits from the low-end at which to start setting bits.
+        /// Must not exceed the number of available bits in a <see cref="int"/> value.
+        /// </param>
+        /// <param name="count">
+        /// The number of bits to set.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="int"/> value with <paramref name="count"/> bits set,
+        /// starting with the lowest bits set at the 0-based index indicated by
+        /// <paramref name="offset"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number of
+        /// bits in a <see cref="int"/> value.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> is negative or greater than the difference
+        /// between the number of bits in a <see cref="int"/> value and
+        /// <paramref name="offset"/>.
+        /// </exception>
         public static int OffsetBitsInt32(int offset, int count)
         {
             ThrowHelpers.ThrowForOffset(offset, sizeof(int));
@@ -297,6 +542,33 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt32Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="long"/> value where the specified number of bits
+        /// starting from the specified low-end bit offset are set. All remaining
+        /// bits are unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The number of bits from the low-end at which to start setting bits.
+        /// Must not exceed the number of available bits in a <see cref="long"/> value.
+        /// </param>
+        /// <param name="count">
+        /// The number of bits to set.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="long"/> value with <paramref name="count"/> bits set,
+        /// starting with the lowest bits set at the 0-based index indicated by
+        /// <paramref name="offset"/>.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number of
+        /// bits in a <see cref="long"/> value.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> is negative or greater than the difference
+        /// between the number of bits in a <see cref="long"/> value and
+        /// <paramref name="offset"/>.
+        /// </exception>
         public static long OffsetBitsInt64(int offset, int count)
         {
             ThrowHelpers.ThrowForOffset(offset, sizeof(long));
@@ -304,6 +576,22 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt64Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="byte"/> value where all bits starting with bit
+        /// at the specified offset bit are set. All remaining lower bits are
+        /// unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The 0-based index of the lowest set bit.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="byte"/> value with the higher bits set, starting at the
+        /// bit as specified by <paramref name="offset"/>. Lower bits are unset.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number 
+        /// </exception>
         public static byte OffsetRemainingUInt8(int offset)
         {
             const int bytes = sizeof(byte);
