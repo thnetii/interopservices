@@ -23,6 +23,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\THNETII.InteropServices.Bitwise\THNETII.InteropServices.Bitwise.csproj" />
     <ProjectReference Include="..\..\src\THNETII.InteropServices.NativeMemory\THNETII.InteropServices.NativeMemory.csproj" />
+    <ProjectReference Include="..\..\src\THNETII.InteropServices.Runtime\THNETII.InteropServices.Runtime.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Runtime.Test\" />
   </ItemGroup>
 
 </Project>

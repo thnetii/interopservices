@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace THNETII.InteropServices.Bitwise
+namespace THNETII.InteropServices.Runtime
 {
     /// <summary>
     /// Supplies Runtime helper methods to create spans over ref and in values.

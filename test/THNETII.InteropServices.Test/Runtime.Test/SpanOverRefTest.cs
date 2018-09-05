@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
-using Xunit;
+﻿using Xunit;
 
-namespace THNETII.InteropServices.Bitwise.Test
+namespace THNETII.InteropServices.Runtime.Test
 {
     public class SpanOverRefTest
     {

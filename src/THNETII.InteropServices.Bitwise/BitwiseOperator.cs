@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using THNETII.InteropServices.Runtime;
 
 namespace THNETII.InteropServices.Bitwise
 {
