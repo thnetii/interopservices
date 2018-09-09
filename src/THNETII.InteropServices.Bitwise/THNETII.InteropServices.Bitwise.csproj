@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\THNETII.InteropServices.Runtime\THNETII.InteropServices.Runtime.csproj" />
+    <!--<ProjectReference Include="..\THNETII.InteropServices.Runtime\THNETII.InteropServices.Runtime.csproj" />-->
   </ItemGroup>
 
 </Project>
