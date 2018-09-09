@@ -2,6 +2,9 @@
 
 namespace THNETII.InteropServices.Bitwise
 {
+    /// <summary>
+    /// Priovides methods to create bitmasks with sequential bit patterns.
+    /// </summary>
     public static class Bitmask
     {
         internal static class ThrowHelpers
@@ -601,6 +604,22 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt8Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="ushort"/> value where all bits starting with bit
+        /// at the specified offset bit are set. All remaining lower bits are
+        /// unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The 0-based index of the lowest set bit.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="ushort"/> value with the higher bits set, starting at the
+        /// bit as specified by <paramref name="offset"/>. Lower bits are unset.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number 
+        /// </exception>
         public static ushort OffsetRemainingUInt16(int offset)
         {
             const int bytes = sizeof(ushort);
@@ -610,6 +629,22 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt16Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="uint"/> value where all bits starting with bit
+        /// at the specified offset bit are set. All remaining lower bits are
+        /// unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The 0-based index of the lowest set bit.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="uint"/> value with the higher bits set, starting at the
+        /// bit as specified by <paramref name="offset"/>. Lower bits are unset.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number 
+        /// </exception>
         public static uint OffsetRemainingUInt32(int offset)
         {
             const int bytes = sizeof(uint);
@@ -619,6 +654,22 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt32Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="ulong"/> value where all bits starting with bit
+        /// at the specified offset bit are set. All remaining lower bits are
+        /// unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The 0-based index of the lowest set bit.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="ulong"/> value with the higher bits set, starting at the
+        /// bit as specified by <paramref name="offset"/>. Lower bits are unset.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number 
+        /// </exception>
         public static ulong OffsetRemainingUInt64(int offset)
         {
             const int bytes = sizeof(ulong);
@@ -628,6 +679,22 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsUInt64Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="sbyte"/> value where all bits starting with bit
+        /// at the specified offset bit are set. All remaining lower bits are
+        /// unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The 0-based index of the lowest set bit.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="sbyte"/> value with the higher bits set, starting at the
+        /// bit as specified by <paramref name="offset"/>. Lower bits are unset.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number 
+        /// </exception>
         public static sbyte OffsetRemainingInt8(int offset)
         {
             const int bytes = sizeof(sbyte);
@@ -637,6 +704,22 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt8Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="short"/> value where all bits starting with bit
+        /// at the specified offset bit are set. All remaining lower bits are
+        /// unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The 0-based index of the lowest set bit.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="short"/> value with the higher bits set, starting at the
+        /// bit as specified by <paramref name="offset"/>. Lower bits are unset.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number 
+        /// </exception>
         public static short OffsetRemainingInt16(int offset)
         {
             const int bytes = sizeof(short);
@@ -646,6 +729,22 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt16Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="int"/> value where all bits starting with bit
+        /// at the specified offset bit are set. All remaining lower bits are
+        /// unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The 0-based index of the lowest set bit.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="int"/> value with the higher bits set, starting at the
+        /// bit as specified by <paramref name="offset"/>. Lower bits are unset.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number 
+        /// </exception>
         public static int OffsetRemainingInt32(int offset)
         {
             const int bytes = sizeof(int);
@@ -655,6 +754,22 @@ namespace THNETII.InteropServices.Bitwise
             return OffsetBitsInt32Unguarded(offset, count);
         }
 
+        /// <summary>
+        /// Returns a <see cref="long"/> value where all bits starting with bit
+        /// at the specified offset bit are set. All remaining lower bits are
+        /// unset.
+        /// </summary>
+        /// <param name="offset">
+        /// The 0-based index of the lowest set bit.
+        /// Must not exceed the remaining number of bytes.
+        /// </param>
+        /// <returns>
+        /// A <see cref="long"/> value with the higher bits set, starting at the
+        /// bit as specified by <paramref name="offset"/>. Lower bits are unset.
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="offset"/> is negative or greater than the number 
+        /// </exception>
         public static long OffsetRemainingInt64(int offset)
         {
             const int bytes = sizeof(long);
