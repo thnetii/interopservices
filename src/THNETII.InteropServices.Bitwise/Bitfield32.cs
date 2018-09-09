@@ -13,6 +13,27 @@ namespace THNETII.InteropServices.Bitwise
         public const int MaximumBits = sizeof(uint) * 8;
 
         /// <summary>
+        /// Defines a bitfield granting access only to the bit with the
+        /// specified index.
+        /// </summary>
+        /// <param name="index">The zero based index of the bit to access.</param>
+        /// <returns>A 32-bit bitfield definition grating access only to the specified bit.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
+        public static Bitfield32 DefineSingleBit(int index)
+        {
+            try
+            {
+                return new Bitfield32(Bitmask.OffsetBitsUInt32(index, count: 1),
+                    shiftAmount: index);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), index,
+                    e.Message);
+            }
+        }
+
+        /// <summary>
         /// Defines a bitfield from the specified mask, optionally shifting the
         /// in- and output values by the specified amount.
         /// </summary>
