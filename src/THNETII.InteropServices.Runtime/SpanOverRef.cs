@@ -25,9 +25,6 @@ namespace THNETII.InteropServices.Runtime
                 .GetTypeInfo()
 #endif
                 .GetMethods(BindingFlags.Public | BindingFlags.Static);
-            ParameterInfo[] @params;
-            ParameterInfo refParam, lengthParam;
-            Type intTypeRef = typeof(int);
             foreach (MethodInfo mi in memoryMarshalMethods)
             {
                 if (CreateSpanGenericDefinition != null &&
@@ -36,35 +33,30 @@ namespace THNETII.InteropServices.Runtime
                 switch (mi.Name)
                 {
                     case CreateSpan:
-                        if (!mi.IsGenericMethod)
-                            continue;
-                        @params = mi.GetParameters();
-                        if (@params.Length != 2)
-                            continue;
-                        refParam = @params[0];
-                        if (!refParam.ParameterType.IsByRef)
-                            continue;
-                        lengthParam = @params[1];
-                        if (lengthParam.ParameterType != intTypeRef)
-                            continue;
-                        CreateSpanGenericDefinition = mi;
+                        AssignMethodInfoIfCorrect(mi, ref CreateSpanGenericDefinition);
                         break;
                     case CreateReadOnlySpan:
-                        if (!mi.IsGenericMethod)
-                            continue;
-                        @params = mi.GetParameters();
-                        if (@params.Length != 2)
-                            continue;
-                        refParam = @params[0];
-                        if (!refParam.ParameterType.IsByRef)
-                            continue;
-                        lengthParam = @params[1];
-                        if (lengthParam.ParameterType != intTypeRef)
-                            continue;
-                        CreateReadOnlySpanGenericDefinition = mi;
+                        AssignMethodInfoIfCorrect(mi, ref CreateReadOnlySpanGenericDefinition);
                         break;
                 }
             }
+        }
+
+        private static void AssignMethodInfoIfCorrect(MethodInfo mi, ref MethodInfo target)
+        {
+            if (!mi.IsGenericMethod)
+                return;
+            var @params = mi.GetParameters();
+            if (@params.Length != 2)
+                return;
+            var refParam = @params[0];
+            if (!refParam.ParameterType.IsByRef)
+                return;
+            var lengthParam = @params[1];
+            Type intTypeRef = typeof(int);
+            if (lengthParam.ParameterType != intTypeRef)
+                return;
+            target = mi;
         }
 
         /// <summary>
