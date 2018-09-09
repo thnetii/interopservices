@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Xunit;
 
 namespace THNETII.InteropServices.Bitwise.Test
 {
+#if false
     public class BitwiseOperatorInvertTest
     {
         [StructLayout(LayoutKind.Sequential, Pack = 0)]
@@ -141,5 +140,6 @@ namespace THNETII.InteropServices.Bitwise.Test
             var inverted = BitwiseOperator.Invert(bytes);
             Assert.All(inverted, b => Assert.Equal<byte>(0xFF, b));
         }
-    }
+    } 
+#endif
 }

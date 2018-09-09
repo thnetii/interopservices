@@ -5,6 +5,7 @@ using THNETII.InteropServices.Runtime;
 
 namespace THNETII.InteropServices.Bitwise
 {
+#if false
     /// <summary>
     /// Supplies bitwise operators for binary blittable types of any size.
     /// </summary>
@@ -311,5 +312,6 @@ namespace THNETII.InteropServices.Bitwise
                     return;
             }
         }
-    }
+    } 
+#endif
 }
