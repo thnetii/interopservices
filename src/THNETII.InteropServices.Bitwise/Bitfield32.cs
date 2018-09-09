@@ -116,14 +116,102 @@ namespace THNETII.InteropServices.Bitwise
             ShiftAmount = shiftAmount;
         }
 
+        /// <summary>
+        /// Extracts the bits as defined by this defintion from the specified
+        /// storage value.
+        /// </summary>
+        /// <param name="storage">The value to extract bits from.</param>
+        /// <returns>
+        /// The bitwise AND between <paramref name="storage"/> and
+        /// <see cref="Mask"/> shifted downwards (to the right) by
+        /// <see cref="ShiftAmount"/> bits.
+        /// <para><c>(<paramref name="storage"/> &amp; <see cref="Mask"/>) &gt;&gt; <see cref="ShiftAmount"/></c></para>
+        /// </returns>
+        /// <remarks>
+        /// Since this operation is performed at bit-level, all logical
+        /// intructions treat the operands as unsigned values. E.g. the shift
+        /// is performed as a logical shift rather than an arithmetric one.
+        /// </remarks>
         public uint Read(uint storage) => (storage & Mask) >> ShiftAmount;
 
+        /// <summary>
+        /// Extracts the bits as defined by this defintion from the specified
+        /// storage value.
+        /// </summary>
+        /// <param name="storage">The value to extract bits from.</param>
+        /// <returns>
+        /// The bitwise AND between <paramref name="storage"/> and
+        /// <see cref="Mask"/>, logically shifted downwards (to the right) by
+        /// <see cref="ShiftAmount"/> bits.
+        /// <para><c>(<paramref name="storage"/> &amp; <see cref="Mask"/>) &gt;&gt; <see cref="ShiftAmount"/></c></para>
+        /// </returns>
+        /// <remarks>
+        /// Since this operation is performed at bit-level, all logical
+        /// intructions treat the operands as unsigned values. E.g. the shift
+        /// is performed as a logical shift rather than an arithmetric one.
+        /// </remarks>
         public int Read(int storage) =>
             unchecked((int)Read(unchecked((uint)storage)));
 
+        /// <summary>
+        /// Sets the bits as definied by this definition in the specified storage
+        /// value, preserving the previous bit setting of all other bits.
+        /// </summary>
+        /// <param name="storage">A reference to the storage value to write to.</param>
+        /// <param name="value">The bit pattern to set.</param>
+        /// <returns>
+        /// The resulting value of <paramref name="storage"/> of the operation
+        /// has completed.
+        /// <para><c>(<paramref name="storage"/> &amp; <see cref="InverseMask"/>) | ((<paramref name="value"/> &lt;&lt; <see cref="ShiftAmount"/>) | <see cref="Mask"/>)</c></para>
+        /// </returns>
+        /// <remarks>
+        /// <paramref name="value"/> is first shifted upwards (to the left) to
+        /// move it into the position where it can OR-ed with <paramref name="storage"/>.
+        /// In order to prevent setting additional bits, the shifted value is
+        /// AND-ed with <see cref="Mask"/>.
+        /// <para>
+        /// The value of <paramref name="storage"/> is AND-ed with <see cref="InverseMask"/>
+        /// to clear all writable bits. The result is then OR-ed with the
+        /// shifted masked <paramref name="value"/> and becomes the new value of
+        /// <paramref name="storage"/>.
+        /// </para>
+        /// <para>
+        /// Since this operation is performed at bit-level, all logical
+        /// intructions treat the operands as unsigned values. E.g. the shift
+        /// is performed as a logical shift rather than an arithmetric one.
+        /// </para>
+        /// </remarks>
         public uint Write(ref uint storage, uint value) =>
             storage = (storage & InverseMask) | ((value << ShiftAmount) | Mask);
 
+        /// <summary>
+        /// Sets the bits as definied by this definition in the specified storage
+        /// value, preserving the previous bit setting of all other bits.
+        /// </summary>
+        /// <param name="storage">A reference to the storage value to write to.</param>
+        /// <param name="value">The bit pattern to set.</param>
+        /// <returns>
+        /// The resulting value of <paramref name="storage"/> of the operation
+        /// has completed.
+        /// <para><c>(<paramref name="storage"/> &amp; <see cref="InverseMask"/>) | ((<paramref name="value"/> &lt;&lt; <see cref="ShiftAmount"/>) | <see cref="Mask"/>)</c></para>
+        /// </returns>
+        /// <remarks>
+        /// <paramref name="value"/> is first shifted upwards (to the left) to
+        /// move it into the position where it can OR-ed with <paramref name="storage"/>.
+        /// In order to prevent setting additional bits, the shifted value is
+        /// AND-ed with <see cref="Mask"/>.
+        /// <para>
+        /// The value of <paramref name="storage"/> is AND-ed with <see cref="InverseMask"/>
+        /// to clear all writable bits. The result is then OR-ed with the
+        /// shifted masked <paramref name="value"/> and becomes the new value of
+        /// <paramref name="storage"/>.
+        /// </para>
+        /// <para>
+        /// Since this operation is performed at bit-level, all logical
+        /// intructions treat the operands as unsigned values. E.g. the shift
+        /// is performed as a logical shift rather than an arithmetric one.
+        /// </para>
+        /// </remarks>
         public int Write(ref int storage, int value)
         {
             uint tmp = unchecked((uint)storage);
