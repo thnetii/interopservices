@@ -1,4 +1,5 @@
 ﻿#if false
+#if !NETSTANDARD1_3
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -314,4 +315,5 @@ namespace THNETII.InteropServices.Bitwise
         }
     } 
 }
+#endif // !NETSTANDARD1_3
 #endif
