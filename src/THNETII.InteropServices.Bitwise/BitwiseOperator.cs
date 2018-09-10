@@ -1,11 +1,11 @@
-﻿using System;
+﻿#if false
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using THNETII.InteropServices.Runtime;
 
 namespace THNETII.InteropServices.Bitwise
 {
-#if false
     /// <summary>
     /// Supplies bitwise operators for binary blittable types of any size.
     /// </summary>
@@ -313,5 +313,5 @@ namespace THNETII.InteropServices.Bitwise
             }
         }
     } 
-#endif
 }
+#endif
