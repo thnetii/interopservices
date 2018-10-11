@@ -7,19 +7,21 @@ namespace THNETII.InteropServices.NativeMemory
     /// Statically stores the marshaled size of a type.
     /// </summary>
     /// <typeparam name="T">The type to marshal.</typeparam>
-    [SuppressMessage(category: null, "CA1000")]
+    [SuppressMessage("Design", "CA1000: Do not declare static members on generic types")]
     public static class SizeOf<T>
     {
         /// <summary>
         /// Gets the number of bytes that the type will occupy in native memory
         /// when marshaled.
         /// </summary>
+        /// <value>The cached result from calling <see cref="Marshal.SizeOf{T}()"/>.</value>
         public static int Bytes { get; } = Marshal.SizeOf<T>();
 
         /// <summary>
         /// Gets the number of bits that the type will occupy in native memory
         /// when marshaled.
         /// </summary>
+        /// <value><c><see cref="Bytes"/> * 8</c></value>
         /// <remarks>One Byte is assumed to hold 8 bits.</remarks>
         public static int Bits { get; } = Bytes * 8;
     }
