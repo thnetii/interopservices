@@ -14,7 +14,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// Gets the number of bytes that the type will occupy in native memory
         /// when marshaled.
         /// </summary>
-        /// <value>The cached result from calling <see cref="Marshal.SizeOf{T}()"/>.</value>
+        /// <value>The cached result from calling the static <see cref="Marshal.SizeOf{T}()"/> method of the <see cref="Marshal"/> class.</value>
         public static int Bytes { get; } = Marshal.SizeOf<T>();
 
         /// <summary>
