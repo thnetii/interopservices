@@ -55,48 +55,6 @@ namespace THNETII.InteropServices.NativeMemory
             ref AsRefStructSpanUnsafe<T>(ptr, 1)[0];
 
         /// <summary>
-        /// Interprets the pointer as a pointer to null-terminated UTF-16 Unicode string
-        /// (<c>PWSTR</c>, <c>LPWSTR</c> or <c>wchar_t*</c> in C) and returnes a character-span
-        /// over the memory containing the string.
-        /// </summary>
-        /// <param name="ptr">The pointer to access.</param>
-        /// <returns>
-        /// A writable character span that spans from the memory location pointed to by <paramref name="ptr"/> and up to (but not including) the first encountered null character.
-        /// </returns>
-        /// <remarks>
-        /// The returned span cannot span over more than 2^31-1 (<c><see cref="int"/>.<see cref="int.MaxValue"/></c>) bytes of memory.
-        /// As a consequence the span will never be able to span over more than 2^30 characters, as each character
-        /// occupies 2 bytes in memory.
-        /// </remarks>
-        public static Span<char> AsZeroTerminatedUnicodeSpan(this IntPtr ptr)
-        {
-            if (ptr == IntPtr.Zero)
-                return Span<char>.Empty;
-            Span<char> span;
-            unsafe { span = new Span<char>(ptr.ToPointer(), int.MaxValue); }
-            int nullIdx;
-            const char nullChar = '\0';
-            try { nullIdx = span.IndexOf(nullChar); }
-#if !NETSTANDARD2_0
-            catch (Exception)
-#else // NETSTANDARD2_0
-            catch (AccessViolationException)
-#endif
-            {
-                for (nullIdx = 0; nullIdx < span.Length; nullIdx++)
-                {
-                    if (span[nullIdx] == nullChar)
-                        break;
-                }
-            }
-            if (nullIdx < 0)
-                return span;
-#pragma warning disable PC001 // API not supported on all platforms
-            return span.Slice(start: 0, length: nullIdx);
-#pragma warning restore PC001 // API not supported on all platforms
-        }
-
-        /// <summary>
         /// Marshals the pointer to an array of consecutive structured values in native memory.
         /// </summary>
         /// <typeparam name="T">The type each array element should be marshaled to.</typeparam>
