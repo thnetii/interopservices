@@ -5,25 +5,24 @@ using System.Runtime.InteropServices;
 namespace THNETII.InteropServices.NativeMemory
 {
     /// <summary>
-    /// Represents a typed pointer to a structure
+    /// Represents a typed pointer to a contiguous sequence of <typeparamref name="T"/> values.
     /// </summary>
-    /// <typeparam name="T">The type of the structure that is pointed to.</typeparam>
+    /// <typeparam name="T">The type of the structures that is pointed to.</typeparam>
     [StructLayout(LayoutKind.Sequential)]
     [SuppressMessage("Design", "CA1000: Do not declare static members on generic types")]
     [SuppressMessage("Usage", "CA2225: Operator overloads have named alternates")]
-    public struct IntPtr<T> : IEquatable<IntPtr<T>>, IEquatable<IntPtr>
-        where T : struct
+    public struct ArrayPtr<T> : IEquatable<ArrayPtr<T>>, IEquatable<IntPtr<T>>, IEquatable<IntPtr> where T : struct
     {
         /// <summary>
-        /// A read-only field that represent the zero- or null-pointer for pointers to <typeparamref name="T" />.
+        /// A read-only field that represent the zero- or null-pointer for pointers to arrays of <typeparamref name="T" />.
         /// </summary>
-        public static readonly IntPtr<T> Null = new IntPtr<T>(IntPtr.Zero);
+        public static readonly ArrayPtr<T> Null = new ArrayPtr<T>(IntPtr.Zero);
 
         /// <summary>
         /// Initializes a new typed pointer with the specified pointer to an unspecified type.
         /// </summary>
         /// <param name="ptr">A pointer to an unspecified type.</param>
-        public IntPtr(IntPtr ptr) => Pointer = ptr;
+        public ArrayPtr(IntPtr ptr) => Pointer = ptr;
 
         /// <summary>
         /// Gets a value indicating whether the instance is a null-reference or not.
@@ -32,17 +31,20 @@ namespace THNETII.InteropServices.NativeMemory
         public bool IsNull => Pointer == IntPtr.Zero;
 
         /// <summary>
-        /// Gets a read/writable reference to the struct value pointed to by the current instance.
-        /// </summary>
-        /// <value>A reference to a struct value of type <typeparamref name="T"/>.</value>
-        /// <exception cref="NullReferenceException">The current instance represents a null-pointer and cannot be dereferenced.</exception>
-        public ref T Struct => ref Pointer.AsRefStruct<T>();
-
-        /// <summary>
         /// Gets the underlying pointer value.
         /// </summary>
         /// <value>A managed <see cref="IntPtr"/> value.</value>
         public IntPtr Pointer { get; }
+
+        /// <summary>
+        /// Returns a span over the array with the specified length.
+        /// </summary>
+        /// <param name="count">The number of struct values in the array.</param>
+        /// <returns>
+        /// An empty span if <paramref name="count"/> is <c>0</c> (zero) or less;<br/>
+        /// otherwise a <see cref="Span{T}"/> that starts at <see cref="Pointer"/> and has a <see cref="Span{T}.Length"/> of <paramref name="count"/>.
+        /// </returns>
+        public Span<T> AsSpan(int count) => Pointer.AsRefStructSpan<T>(count);
 
         /// <inheritdoc />
         public override int GetHashCode() => Pointer.GetHashCode();
@@ -54,7 +56,7 @@ namespace THNETII.InteropServices.NativeMemory
             {
                 case null:
                     return Pointer.Equals(null);
-                case IntPtr<T> other:
+                case ArrayPtr<T> other:
                     return Pointer.Equals(other.Pointer);
                 case IntPtr ptr:
                     return Pointer == ptr;
@@ -64,33 +66,52 @@ namespace THNETII.InteropServices.NativeMemory
         }
 
         /// <inheritdoc />
-        public bool Equals(IntPtr<T> other) => Equals(other.Pointer);
+        public bool Equals(ArrayPtr<T> other) => Equals(other.Pointer);
 
         /// <inheritdoc />
         public bool Equals(IntPtr otherPtr) => Pointer == otherPtr;
 
         /// <inheritdoc />
-        public static bool operator ==(IntPtr<T> left, IntPtr<T> right) =>
+        public bool Equals(IntPtr<T> otherPtr) => Pointer == otherPtr.Pointer;
+
+        /// <inheritdoc />
+        public static bool operator ==(ArrayPtr<T> left, ArrayPtr<T> right) =>
             left.Equals(right);
 
         /// <inheritdoc />
-        public static bool operator !=(IntPtr<T> left, IntPtr<T> right) =>
+        public static bool operator !=(ArrayPtr<T> left, ArrayPtr<T> right) =>
             !left.Equals(right);
 
         /// <inheritdoc />
-        public static bool operator ==(IntPtr<T> left, IntPtr right) =>
+        public static bool operator ==(ArrayPtr<T> left, IntPtr right) =>
             left.Equals(right);
 
         /// <inheritdoc />
-        public static bool operator !=(IntPtr<T> left, IntPtr right) =>
+        public static bool operator !=(ArrayPtr<T> left, IntPtr right) =>
             !left.Equals(right);
 
         /// <inheritdoc />
-        public static bool operator ==(IntPtr left, IntPtr<T> right) =>
+        public static bool operator ==(ArrayPtr<T> left, IntPtr<T> right) =>
+            left.Equals(right.Pointer);
+
+        /// <inheritdoc />
+        public static bool operator !=(ArrayPtr<T> left, IntPtr<T> right) =>
+            !left.Equals(right);
+
+        /// <inheritdoc />
+        public static bool operator ==(IntPtr left, ArrayPtr<T> right) =>
             left.Equals(right);
 
         /// <inheritdoc />
-        public static bool operator !=(IntPtr left, IntPtr<T> right) =>
+        public static bool operator !=(IntPtr left, ArrayPtr<T> right) =>
+            !right.Equals(left);
+
+        /// <inheritdoc />
+        public static bool operator ==(IntPtr<T> left, ArrayPtr<T> right) =>
+            left.Equals(right);
+
+        /// <inheritdoc />
+        public static bool operator !=(IntPtr<T> left, ArrayPtr<T> right) =>
             !right.Equals(left);
 
         /// <summary>
@@ -100,8 +121,8 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="count">The number of structs to increment by.</param>
         /// <returns>A new pointer pointing to the memory location that is located at <c><paramref name="count"/> * sizeof(<typeparamref name="T"/>)</c> positive offset from <paramref name="left"/>.</returns>
         /// <remarks>This operation behaves like pointer arithmatic of typed pointer in the C programming language.</remarks>
-        public static IntPtr<T> operator +(IntPtr<T> left, int count) =>
-            new IntPtr<T>(left.Pointer + count * SizeOf<T>.Bytes);
+        public static ArrayPtr<T> operator +(ArrayPtr<T> left, int count) =>
+            new ArrayPtr<T>(left.Pointer + count * SizeOf<T>.Bytes);
 
         /// <summary>
         /// Increments the pointer by the specified number of structs.
@@ -109,7 +130,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="count">The number of structs to increment by.</param>
         /// <returns>A new pointer pointing to the memory location that is located at <c><paramref name="count"/> * sizeof(<typeparamref name="T"/>)</c> positive offset from the current instance.</returns>
         /// <remarks>This operation behaves like pointer arithmatic of typed pointer in the C programming language.</remarks>
-        public IntPtr<T> Add(int count) => this + count;
+        public ArrayPtr<T> Add(int count) => this + count;
 
         /// <summary>
         /// Decrements the pointer by the specified number of structs.
@@ -118,8 +139,8 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="count">The number of structs to decrement by.</param>
         /// <returns>A new pointer pointing to the memory location that is located at <c><paramref name="count"/> * sizeof(<typeparamref name="T"/>)</c> negative offset from <paramref name="left"/>.</returns>
         /// <remarks>This operation behaves like pointer arithmatic of typed pointer in the C programming language.</remarks>
-        public static IntPtr<T> operator -(IntPtr<T> left, int count) =>
-            new IntPtr<T>(left.Pointer - count * SizeOf<T>.Bytes);
+        public static ArrayPtr<T> operator -(ArrayPtr<T> left, int count) =>
+            new ArrayPtr<T>(left.Pointer - count * SizeOf<T>.Bytes);
 
         /// <summary>
         /// Decrements the pointer by the specified number of structs.
@@ -127,13 +148,13 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="count">The number of structs to decrement by.</param>
         /// <returns>A new pointer pointing to the memory location that is located at <c><paramref name="count"/> * sizeof(<typeparamref name="T"/>)</c> negative offset from the current instance.</returns>
         /// <remarks>This operation behaves like pointer arithmatic of typed pointer in the C programming language.</remarks>
-        public IntPtr<T> Subtract(int count) => this - count;
+        public ArrayPtr<T> Subtract(int count) => this - count;
 
         /// <summary>
         /// Casts the typed instance to a pointer value of unspecified type.
         /// </summary>
         /// <param name="typedPtr">The pointer to cast.</param>
-        public static explicit operator IntPtr(IntPtr<T> typedPtr) =>
+        public static explicit operator IntPtr(ArrayPtr<T> typedPtr) =>
             typedPtr.Pointer;
 
         /// <summary>
