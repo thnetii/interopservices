@@ -85,7 +85,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <returns>A 32-bit bitfield that uses a mask where all bits starting from the bit at position <paramref name="offset"/> are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
         public static Bitfield64 DefineRemainingBits(int offset) =>
-            new Bitfield64(Bitmask.OffsetRemainingUInt32(offset));
+            new Bitfield64(Bitmask.OffsetRemainingUInt32(offset), offset);
 
         /// <summary>
         /// Defines a bitfield granting access to the specified number of high
