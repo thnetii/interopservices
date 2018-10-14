@@ -203,7 +203,7 @@ namespace THNETII.InteropServices.Bitwise
         /// </para>
         /// </remarks>
         public ulong Write(ref ulong storage, ulong value) =>
-            storage = (storage & InverseMask) | ((value << ShiftAmount) | Mask);
+            storage = (storage & InverseMask) | ((value << ShiftAmount) & Mask);
 
         /// <summary>
         /// Sets the bits as definied by this definition in the specified storage
