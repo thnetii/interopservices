@@ -1,0 +1,4 @@
+[submodule "gh-pages-deploy"]
+	path = gh-pages-deploy
+	url = https://github.com/thnetii/docs.git
+	branch = deploy

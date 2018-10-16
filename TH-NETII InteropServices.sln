@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		.gitmodules = .gitmodules
 		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 	EndProjectSection
@@ -23,6 +24,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.InteropServices.Bitwise", "src\THNETII.InteropServices.Bitwise\THNETII.InteropServices.Bitwise.csproj", "{F521C542-DBAA-4D2D-B788-F9BB6B3C6A93}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.InteropServices.Runtime", "src\THNETII.InteropServices.Runtime\THNETII.InteropServices.Runtime.csproj", "{762A7191-56AB-4E86-B874-74A054DD272E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docfx", "docfx", "{70C7A8FD-B4AB-4D42-A4DF-89A6770C9BE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.InteropServices.DocFx", "docfx\THNETII.InteropServices.DocFx\THNETII.InteropServices.DocFx.csproj", "{34895B7D-2DF2-4759-B215-D30AF35FA31B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +87,12 @@ Global
 		{762A7191-56AB-4E86-B874-74A054DD272E}.Release|x64.Build.0 = Release|Any CPU
 		{762A7191-56AB-4E86-B874-74A054DD272E}.Release|x86.ActiveCfg = Release|Any CPU
 		{762A7191-56AB-4E86-B874-74A054DD272E}.Release|x86.Build.0 = Release|Any CPU
+		{34895B7D-2DF2-4759-B215-D30AF35FA31B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34895B7D-2DF2-4759-B215-D30AF35FA31B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{34895B7D-2DF2-4759-B215-D30AF35FA31B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34895B7D-2DF2-4759-B215-D30AF35FA31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34895B7D-2DF2-4759-B215-D30AF35FA31B}.Release|x64.ActiveCfg = Release|Any CPU
+		{34895B7D-2DF2-4759-B215-D30AF35FA31B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +102,7 @@ Global
 		{B4E305D2-7093-40C1-962B-45CD6CF1B7F2} = {FC440972-893F-439E-AE8F-F2B4536F63B0}
 		{F521C542-DBAA-4D2D-B788-F9BB6B3C6A93} = {5C704544-519C-4F65-B09B-FD7718531EA6}
 		{762A7191-56AB-4E86-B874-74A054DD272E} = {5C704544-519C-4F65-B09B-FD7718531EA6}
+		{34895B7D-2DF2-4759-B215-D30AF35FA31B} = {70C7A8FD-B4AB-4D42-A4DF-89A6770C9BE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B21D348-740F-4C22-B147-963ADEE398F2}
