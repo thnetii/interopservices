@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace THNETII.InteropServices.NativeMemory.Specialized
+namespace THNETII.InteropServices.NativeMemory
 {
     /// <summary>
     /// A pointer to a seqence of wide UTF-16 characters representing a
