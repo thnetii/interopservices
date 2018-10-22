@@ -17,7 +17,7 @@ namespace THNETII.InteropServices.NativeMemory
     [StructLayout(LayoutKind.Sequential)]
     [SuppressMessage("Design", "CA1000: Do not declare static members on generic types")]
     [SuppressMessage("Usage", "CA2225: Operator overloads have named alternates")]
-    [SuppressMessage("Performance", "CA1815: Override equals and operator equals on value types", Justification = nameof(IntPtrOfTExtensions))]
+    [SuppressMessage("Performance", "CA1815: Override equals and operator equals on value types", Justification = nameof(IIntPtrExtensions))]
     public struct ArrayPtr<T> : IArrayPtr<T> where T : struct
     {
         /// <summary>
@@ -68,7 +68,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// <typeparam name="T">The type of the structures that is pointed to.</typeparam>
         /// <returns>
         /// An empty span if <paramref name="count"/> is <c>0</c> (zero) or less;<br/>
-        /// otherwise a <see cref="Span{T}"/> that starts at the <see cref="IIntPtr{T}.Pointer"/> of <paramref name="ptr"/> and has a <see cref="Span{T}.Length"/> of <paramref name="count"/>.
+        /// otherwise a <see cref="Span{T}"/> that starts at the <see cref="IIntPtr.Pointer"/> of <paramref name="ptr"/> and has a <see cref="Span{T}.Length"/> of <paramref name="count"/>.
         /// </returns>
         public static Span<T> AsSpan<T>(this IArrayPtr<T> ptr, int count) where T : struct =>
             (ptr?.Pointer).GetValueOrDefault().AsRefStructSpan<T>(count);

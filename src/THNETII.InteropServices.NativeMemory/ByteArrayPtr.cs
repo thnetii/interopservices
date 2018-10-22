@@ -8,7 +8,7 @@ namespace THNETII.InteropServices.NativeMemory
     /// Represents a typed pointer to a contiguous sequence of <see cref="byte"/> values.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    [SuppressMessage("Performance", "CA1815: Override equals and operator equals on value types", Justification = nameof(IntPtrOfTExtensions))]
+    [SuppressMessage("Performance", "CA1815: Override equals and operator equals on value types", Justification = nameof(IIntPtrExtensions))]
     public struct ByteArrayPtr : IArrayPtr<byte>
     {
         /// <summary>

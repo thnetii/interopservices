@@ -5,26 +5,21 @@ using System.Runtime.InteropServices;
 namespace THNETII.InteropServices.NativeMemory
 {
     /// <summary>
-    /// A pointer to a seqence of wide UTF-16 characters representing a
-    /// UTF-16 native string.
+    /// Represents a typed pointer to a structure
     /// </summary>
-    /// <remarks>
-    /// Pointer to wide-characters sequences are also known in C APIs as:
-    /// <list type="bullet">
-    /// <item><term><c>wchar_t*</c></term></item>
-    /// <item><term><c>PWSTR</c></term></item>
-    /// <item><term><c>LPWSTR</c></term></item>
-    /// </list>
-    /// </remarks>
+    /// <typeparam name="T">The type of the structure that is pointed to.</typeparam>
     [StructLayout(LayoutKind.Sequential)]
+    [SuppressMessage("Design", "CA1000: Do not declare static members on generic types")]
+    [SuppressMessage("Usage", "CA2225: Operator overloads have named alternates")]
     [SuppressMessage("Performance", "CA1815: Override equals and operator equals on value types", Justification = nameof(IIntPtrExtensions))]
-    public struct WideStringPtr : IArrayPtr<char>
+    public struct IntPtr<T> : IIntPtr<T>
+        where T : struct
     {
         /// <summary>
         /// Initializes a new typed pointer with the specified pointer to an unspecified type.
         /// </summary>
         /// <param name="ptr">A pointer to an unspecified type.</param>
-        public WideStringPtr(IntPtr ptr) => Pointer = ptr;
+        public IntPtr(IntPtr ptr) => Pointer = ptr;
 
         /// <inheritdoc />
         public IntPtr Pointer { get; }

@@ -8,7 +8,7 @@ namespace THNETII.InteropServices.NativeMemory
     /// A typed pointer to an array of <see cref="IntPtr"/> values.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    [SuppressMessage("Performance", "CA1815: Override equals and operator equals on value types", Justification = nameof(IntPtrOfTExtensions))]
+    [SuppressMessage("Performance", "CA1815: Override equals and operator equals on value types", Justification = nameof(IIntPtrExtensions))]
     public struct IntPtrArrayPtr : IArrayPtr<IntPtr>
     {
         /// <summary>
