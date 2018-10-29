@@ -13,11 +13,10 @@ namespace THNETII.InteropServices.NativeMemory
         private static Span<T> AsRefStructSpanUnsafe<T>(this IntPtr ptr, int count)
             where T : struct
         {
-            var cbSpan = count * SizeOf<T>.Bytes;
             Span<T> span;
             try
             {
-                unsafe { span = new Span<T>(ptr.ToPointer(), cbSpan); }
+                unsafe { span = new Span<T>(ptr.ToPointer(), count); }
             }
             catch (ArgumentException argExcept)
             {
