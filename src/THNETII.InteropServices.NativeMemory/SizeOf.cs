@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 #if !NETSTANDARD1_3
 using System;
@@ -12,6 +13,7 @@ namespace THNETII.InteropServices.NativeMemory
     /// <summary>
     /// Caches the marshaled size of a <see cref="Type"/> from Reflection.
     /// </summary>
+    [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "(),nq}")]
     public sealed class SizeOf
     {
         internal SizeOf(Type type, int bytes) : this(type, bytes, bits: bytes * 8) { }
@@ -61,6 +63,8 @@ namespace THNETII.InteropServices.NativeMemory
 
             return (SizeOf)defaultPropertyInfo.GetValue(null);
         }
+
+        private string DebuggerDisplay() => FormattableString.Invariant($"SizeOf<{Type}>, {nameof(Bytes)} = {Bytes}, {nameof(Bits)} = {Bits}");
     }
 #endif // !NETSTANDARD1_3
 
