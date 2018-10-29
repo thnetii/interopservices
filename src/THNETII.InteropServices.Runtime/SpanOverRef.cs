@@ -96,6 +96,40 @@ namespace THNETII.InteropServices.Runtime
         }
 
         /// <summary>
+        /// Creates a writable single-item span of the specified reference.
+        /// </summary>
+        /// <typeparam name="T">The type of the item in the returned span.</typeparam>
+        /// <param name="reference">A reference to the value to span over. If unsuccessful, the value will be copied to the heap instead.</param>
+        /// <returns>
+        /// A <see cref="Span{T}"/> value with a length of <c>1</c>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"><see cref="IsCreateSpanSupported"/> is <c>false</c>.</exception>
+        public static Span<T> GetSpan<T>(ref T reference)
+        {
+            if (IsCreateSpanSupported)
+                return CreateSpanInvoker<T>.CreateSpan(ref reference, length: 1);
+            else
+                throw new InvalidOperationException(FormattableString.Invariant($"{nameof(MemoryMarshal)}.{CreateSpan} is not supported."));
+        }
+
+        /// <summary>
+        /// Creates a read-only single-item span of the specified reference.
+        /// </summary>
+        /// <typeparam name="T">The type of the item in the returned span.</typeparam>
+        /// <param name="reference">A reference to the value to span over. If unsuccessful, the value will be copied to the heap instead.</param>
+        /// <returns>
+        /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException"><see cref="IsCreateSpanSupported"/> is <c>false</c>.</exception>
+        public static ReadOnlySpan<T> GetReadOnlySpan<T>(in T reference)
+        {
+            if (IsCreateSpanSupported)
+                return CreateSpanInvoker<T>.CreateReadOnlySpan(ref Unsafe.AsRef(reference), length: 1);
+            else
+                throw new InvalidOperationException(FormattableString.Invariant($"{nameof(MemoryMarshal)}.{CreateReadOnlySpan} is not supported."));
+        }
+
+        /// <summary>
         /// Creates a writable single-item span of the specified reference; or, if creating
         /// spans over reference is not supported by the runtime, copies the specified value to heap memory.
         /// </summary>
