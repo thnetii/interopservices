@@ -147,7 +147,7 @@ namespace THNETII.InteropServices.Runtime
         /// over the specified <paramref name="reference"/> reference.
         /// </para>
         /// </returns>
-        public static Span<T> CopyOrSpan<T>(ref T reference, out bool isCopy)
+        public static Span<T> GetSpanOrCopy<T>(ref T reference, out bool isCopy)
         {
             if (IsCreateSpanSupported)
             {
@@ -179,8 +179,8 @@ namespace THNETII.InteropServices.Runtime
         /// over the specified <paramref name="input"/> value.
         /// </para>
         /// </returns>
-        public static ReadOnlySpan<T> CopyOrSpanReadOnly<T>(in T input, out bool isCopy) =>
-            CopyOrSpanReadOnly(input, out isCopy, out var _);
+        public static ReadOnlySpan<T> GetReadOnlySpanOrCopy<T>(in T input, out bool isCopy) =>
+            GetReadOnlySpanOrCopy(input, out isCopy, out var _);
 
         /// <summary>
         /// Creates a read-only single-item span of the specified value; or, if creating
@@ -203,7 +203,7 @@ namespace THNETII.InteropServices.Runtime
         /// will be set to an empy span.
         /// </para>
         /// </returns>
-        public static ReadOnlySpan<T> CopyOrSpanReadOnly<T>(in T input, out bool isCopy, out Span<T> copySpan)
+        public static ReadOnlySpan<T> GetReadOnlySpanOrCopy<T>(in T input, out bool isCopy, out Span<T> copySpan)
         {
             if (IsCreateSpanSupported)
             {
