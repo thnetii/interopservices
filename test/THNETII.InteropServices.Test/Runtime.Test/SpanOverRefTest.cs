@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace THNETII.InteropServices.Runtime.Test
 {
-    public class SpanOverRefTest
+    public static class SpanOverRefTest
     {
-        private void AssertSpan(ref int variable, Span<int> span)
+        private static void AssertSpan(ref int variable, Span<int> span)
         {
             Assert.Equal(1, span.Length);
             Assert.Equal(variable, span[0]);
@@ -13,7 +14,7 @@ namespace THNETII.InteropServices.Runtime.Test
             Assert.Equal(24, variable);
         }
 
-        private void AssertReadOnlySpan(ref int variable, ReadOnlySpan<int> span)
+        private static void AssertReadOnlySpan(ref int variable, ReadOnlySpan<int> span)
         {
             Assert.Equal(1, span.Length);
             Assert.Equal(variable, span[0]);
@@ -22,75 +23,57 @@ namespace THNETII.InteropServices.Runtime.Test
         }
 
         [SkippableFact]
-        public void GetSpanOverLocalVariableThrowsIfNotSupported()
+        public static void GetSpanOverLocalVariable()
         {
-            Skip.If(SpanOverRef.IsCreateSpanSupported, $"{nameof(SpanOverRef)}.{nameof(SpanOverRef.IsCreateSpanSupported)} returned true");
-
-            int test = 42;
-            Assert.Throws<InvalidOperationException>(() => SpanOverRef.GetSpan(ref test));
-        }
-
-        [SkippableFact]
-        public void GetReadOnlySpanOverLocalVariableThrowsIfNotSupported()
-        {
-            Skip.If(SpanOverRef.IsCreateSpanSupported, $"{nameof(SpanOverRef)}.{nameof(SpanOverRef.IsCreateSpanSupported)} returned true");
-
-            int test = 42;
-            Assert.Throws<InvalidOperationException>(() => SpanOverRef.GetReadOnlySpan(test));
-        }
-
-        [SkippableFact]
-        public void GetSpanOverLocalVariable()
-        {
-            Skip.If(!SpanOverRef.IsCreateSpanSupported, $"{nameof(SpanOverRef)}.{nameof(SpanOverRef.IsCreateSpanSupported)} returned false");
-
             int test = 42;
             AssertSpan(ref test, SpanOverRef.GetSpan(ref test));
         }
 
         [SkippableFact]
-        public void GetReadOnlySpanOverLocalVariable()
+        public static void GetReadOnlySpanOverLocalVariable()
         {
-            Skip.If(!SpanOverRef.IsCreateSpanSupported, $"{nameof(SpanOverRef)}.{nameof(SpanOverRef.IsCreateSpanSupported)} returned false");
-
             int test = 42;
             AssertReadOnlySpan(ref test, SpanOverRef.GetReadOnlySpan(test));
         }
 
-        [SkippableFact]
-        public void GetSpanOrCopyGetsSpanIfSupported()
+        [StructLayout(LayoutKind.Sequential)]
+        private class HeapClass
         {
-            Skip.If(!SpanOverRef.IsCreateSpanSupported, $"{nameof(SpanOverRef)}.{nameof(SpanOverRef.IsCreateSpanSupported)} returned false");
-            int test = 42;
-            AssertSpan(ref test, SpanOverRef.GetSpanOrCopy(ref test, out bool isCopy));
-            Assert.False(isCopy);
+            public int field;
+            public Span<int> GetFieldSpan(out GCHandle pinnedHandle) => SpanOverRef.GetPinnedSpan(ref field, this, out pinnedHandle);
+            public ReadOnlySpan<int> GetReadOnlyFieldSpan(out GCHandle pinnedHandle) => SpanOverRef.GetPinnedReadOnlySpan(field, this, out pinnedHandle);
         }
 
-        [SkippableFact]
-        public void GetSpanOrCopyCreatesCopyIfNotSupported()
+        [Fact]
+        public static void GetPinnedSpanOverHeapVariable()
         {
-            Skip.If(SpanOverRef.IsCreateSpanSupported, $"{nameof(SpanOverRef)}.{nameof(SpanOverRef.IsCreateSpanSupported)} returned false");
-            int test = 42;
-            SpanOverRef.GetSpanOrCopy(ref test, out bool isCopy);
-            Assert.True(isCopy);
+            var test = new HeapClass() { field = 42 };
+            var span = test.GetFieldSpan(out var pinnedHandle);
+            try
+            {
+                AssertSpan(ref test.field, span);
+            }
+            finally
+            {
+                if (pinnedHandle.IsAllocated)
+                    pinnedHandle.Free();
+            }
         }
 
-        [SkippableFact]
-        public void GetReadOnlySpanOrCopyGetsSpanIfSupported()
+        [Fact]
+        public static void GetPinnedReadOnlySpanOverHeapVariable()
         {
-            Skip.If(!SpanOverRef.IsCreateSpanSupported, $"{nameof(SpanOverRef)}.{nameof(SpanOverRef.IsCreateSpanSupported)} returned false");
-            int test = 42;
-            AssertReadOnlySpan(ref test, SpanOverRef.GetReadOnlySpanOrCopy(test, out bool isCopy));
-            Assert.False(isCopy);
-        }
-
-        [SkippableFact]
-        public void GetReadOnlySpanOrCopyCreatesCopyIfNotSupported()
-        {
-            Skip.If(SpanOverRef.IsCreateSpanSupported, $"{nameof(SpanOverRef)}.{nameof(SpanOverRef.IsCreateSpanSupported)} returned false");
-            int test = 42;
-            SpanOverRef.GetReadOnlySpanOrCopy(test, out bool isCopy);
-            Assert.True(isCopy);
+            var test = new HeapClass() { field = 42 };
+            var span = test.GetReadOnlyFieldSpan(out var pinnedHandle);
+            try
+            {
+                AssertReadOnlySpan(ref test.field, span);
+            }
+            finally
+            {
+                if (pinnedHandle.IsAllocated)
+                    pinnedHandle.Free();
+            }
         }
     }
 }

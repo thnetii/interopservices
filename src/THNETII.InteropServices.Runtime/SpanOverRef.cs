@@ -60,8 +60,20 @@ namespace THNETII.InteropServices.Runtime
         }
 
         /// <summary>
-        /// Gets a value indicating whether creating spans is supported byt the runtime.
+        /// Gets a value indicating whether creating spans is supported by the runtime.
         /// </summary>
+        /// <remarks>
+        /// Starting with .NET Core 2.1, the .NET Core runtime supports the
+        /// creation of Spans over <c>ref</c> and <c>in</c> values without needing
+        /// to pin them in memory first.
+        /// <para>
+        /// Without the runtime support, Spans need to be constructed by retrieving
+        /// the pointer to the value. For values that are stored on the heap,
+        /// their containing object (or array) needs to be pinned first. Values
+        /// on the stack are not subject to garbage collection and can thus be
+        /// safely created regardless of runtime support.
+        /// </para>
+        /// </remarks>
         public static bool IsCreateSpanSupported => CreateSpanGenericDefinition != null;
 
         internal delegate Span<T> CreateSpanDelegate<T>(ref T reference, int length);
@@ -99,125 +111,142 @@ namespace THNETII.InteropServices.Runtime
         /// Creates a writable single-item span of the specified reference.
         /// </summary>
         /// <typeparam name="T">The type of the item in the returned span.</typeparam>
-        /// <param name="reference">A reference to the value to span over. If unsuccessful, the value will be copied to the heap instead.</param>
+        /// <param name="reference">A reference to the value to span over.</param>
         /// <returns>
         /// A <see cref="Span{T}"/> value with a length of <c>1</c>.
         /// </returns>
-        /// <exception cref="InvalidOperationException"><see cref="IsCreateSpanSupported"/> is <c>false</c>.</exception>
+        /// <remarks>
+        /// <note>
+        /// If <see cref="IsCreateSpanSupported"/> is <c>false</c>, calling this
+        /// method is unsafe and can lead to access violation exceptions when
+        /// <paramref name="reference"/> is located on the heap without being fixed/pinned.
+        /// In such cases, you should call <see cref="GetPinnedSpan{T}(ref T, object, out GCHandle)"/> instead.
+        /// </note>
+        /// <para>
+        /// If <paramref name="reference"/> is stack-local, the returned span is
+        /// only valid as long as <paramref name="reference"/> is valid on its
+        /// stack frame.
+        /// </para>
+        /// </remarks>
         public static Span<T> GetSpan<T>(ref T reference)
         {
             if (IsCreateSpanSupported)
-                return CreateSpanInvoker<T>.CreateSpan(ref reference, length: 1);
+                return CreateSpanUnsafe(ref reference);
             else
-                throw new InvalidOperationException(FormattableString.Invariant($"{nameof(MemoryMarshal)}.{CreateSpan} is not supported."));
+                return GetStackLocalSpanUnsafe(ref reference);
         }
 
         /// <summary>
         /// Creates a read-only single-item span of the specified reference.
         /// </summary>
         /// <typeparam name="T">The type of the item in the returned span.</typeparam>
-        /// <param name="reference">A reference to the value to span over. If unsuccessful, the value will be copied to the heap instead.</param>
+        /// <param name="reference">A reference to the value to span over.</param>
         /// <returns>
         /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
         /// </returns>
-        /// <exception cref="InvalidOperationException"><see cref="IsCreateSpanSupported"/> is <c>false</c>.</exception>
+        /// <remarks>
+        /// <note>
+        /// If <see cref="IsCreateSpanSupported"/> is <c>false</c>, calling this
+        /// method is unsafe and can lead to access violation exceptions when
+        /// <paramref name="reference"/> is located on the heap without being fixed/pinned.
+        /// In such cases, you should call <see cref="GetPinnedSpan{T}(ref T, object, out GCHandle)"/> instead.
+        /// </note>
+        /// <para>
+        /// If <paramref name="reference"/> is stack-local, the returned span is
+        /// only valid as long as <paramref name="reference"/> is valid on its
+        /// stack frame.
+        /// </para>
+        /// </remarks>
         public static ReadOnlySpan<T> GetReadOnlySpan<T>(in T reference)
         {
             if (IsCreateSpanSupported)
-                return CreateSpanInvoker<T>.CreateReadOnlySpan(ref Unsafe.AsRef(reference), length: 1);
+                return CreateReadOnlySpanUnsafe(reference);
             else
-                throw new InvalidOperationException(FormattableString.Invariant($"{nameof(MemoryMarshal)}.{CreateReadOnlySpan} is not supported."));
+                return GetStackLocalSpanUnsafe(ref Unsafe.AsRef(reference));
         }
 
         /// <summary>
-        /// Creates a writable single-item span of the specified reference; or, if creating
-        /// spans over reference is not supported by the runtime, copies the specified value to heap memory.
+        /// Creates a writable single-item span of the specified reference and
+        /// pins the object it is contained in to ensure the span remains valid.
         /// </summary>
         /// <typeparam name="T">The type of the item in the returned span.</typeparam>
-        /// <param name="reference">A reference to the value to span over. If unsuccessful, the value will be copied to the heap instead.</param>
-        /// <param name="isCopy">On return receives value that indicates whether the returned span is a heap-copy or provides direct access to <paramref name="reference"/>.</param>
+        /// <param name="reference">A reference to the value to span over.</param>
+        /// <param name="container">The object on the heap where <paramref name="reference"/> is contained in.</param>
+        /// <param name="pinnedHandle">Receives the <see cref="GCHandle"/> that was allocated for pinning <paramref name="container"/>. <see cref="GCHandle.IsAllocated"/> must be checked before calling <see cref="GCHandle.Free"/>.</param>
         /// <returns>
         /// A <see cref="Span{T}"/> value with a length of <c>1</c>.
-        /// <para>
-        /// If <paramref name="isCopy"/> is <c>true</c>, the span wraps over a
-        /// copy of <paramref name="reference"/> which resides on the heap.
-        /// </para>
-        /// <para>
-        /// If <paramref name="isCopy"/> is <c>false</c>, the span wraps directly
-        /// over the specified <paramref name="reference"/> reference.
-        /// </para>
         /// </returns>
-        public static Span<T> GetSpanOrCopy<T>(ref T reference, out bool isCopy)
+        /// <remarks>
+        /// If <see cref="IsCreateSpanSupported"/> returns <c>true</c>, the runtime
+        /// supports creating spans without pinning <paramref name="container"/>. In that case,
+        /// <paramref name="pinnedHandle"/> is set to its default value and its
+        /// <see cref="GCHandle.IsAllocated"/> property will be <c>false</c>.
+        /// <para>
+        /// When done with the returned span, callers should call <see cref="GCHandle.Free"/> on the returned <paramref name="pinnedHandle"/>
+        /// if and only if the <see cref="GCHandle.IsAllocated"/> property of <paramref name="pinnedHandle"/>
+        /// is <c>true</c>.
+        /// </para>
+        /// </remarks>
+        public static unsafe Span<T> GetPinnedSpan<T>(ref T reference, object container, out GCHandle pinnedHandle)
         {
             if (IsCreateSpanSupported)
             {
-                isCopy = false;
-                return CreateSpanInvoker<T>.CreateSpan(ref reference, length: 1);
+                pinnedHandle = default;
+                return CreateSpanUnsafe(ref reference);
             }
             else
             {
-                isCopy = true;
-                return new[] { reference };
+                pinnedHandle = GCHandle.Alloc(container, GCHandleType.Pinned);
+                return GetStackLocalSpanUnsafe(ref reference);
             }
         }
 
         /// <summary>
-        /// Creates a read-only single-item span of the specified value; or, if creating
-        /// spans over references is not supported by the runtime, copies the specified value to heap memory.
+        /// Creates a read-only single-item span of the specified reference and
+        /// pins the object it is contained in to ensure the span remains valid.
         /// </summary>
         /// <typeparam name="T">The type of the item in the returned span.</typeparam>
-        /// <param name="input">A read-only reference to the value to span over. If unsuccessful, the value will be copied to the heap instead.</param>
-        /// <param name="isCopy">On return receives value that indicates whether the returned span is a heap-copy or provides direct access to <paramref name="input"/>.</param>
+        /// <param name="reference">A reference to the value to span over.</param>
+        /// <param name="container">The object on the heap where <paramref name="reference"/> is contained in.</param>
+        /// <param name="pinnedHandle">Receives the <see cref="GCHandle"/> that was allocated for pinning <paramref name="container"/>. <see cref="GCHandle.IsAllocated"/> must be checked before calling <see cref="GCHandle.Free"/>.</param>
         /// <returns>
         /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
-        /// <para>
-        /// If <paramref name="isCopy"/> is <c>true</c>, the span wraps over a
-        /// copy of <paramref name="input"/> which resides on the heap.
-        /// </para>
-        /// <para>
-        /// If <paramref name="isCopy"/> is <c>false</c>, the span wraps directly
-        /// over the specified <paramref name="input"/> value.
-        /// </para>
         /// </returns>
-        public static ReadOnlySpan<T> GetReadOnlySpanOrCopy<T>(in T input, out bool isCopy) =>
-            GetReadOnlySpanOrCopy(input, out isCopy, out var _);
-
-        /// <summary>
-        /// Creates a read-only single-item span of the specified value; or, if creating
-        /// spans over references is not supported by the runtime, copies the specified value to heap memory.
-        /// </summary>
-        /// <typeparam name="T">The type of the item in the returned span.</typeparam>
-        /// <param name="input">A read-only reference to the value to span over. If unsuccessful, the value will be copied to the heap instead.</param>
-        /// <param name="isCopy">On return receives value that indicates whether the returned span is a heap-copy or provides direct access to <paramref name="input"/>.</param>
-        /// <param name="copySpan">On return receives a writable to span to the heap-copy of <paramref name="input"/> if <paramref name="isCopy"/> is <c>true</c>; otherwise, receives an empty span.</param>
-        /// <returns>
-        /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
+        /// <remarks>
+        /// If <see cref="IsCreateSpanSupported"/> returns <c>true</c>, the runtime
+        /// supports creating spans without pinning <paramref name="container"/>. In that case,
+        /// <paramref name="pinnedHandle"/> is set to its default value and its
+        /// <see cref="GCHandle.IsAllocated"/> property will be <c>false</c>.
         /// <para>
-        /// If <paramref name="isCopy"/> is <c>true</c>, the span wraps over a
-        /// copy of <paramref name="input"/> which resides on the heap. <paramref name="copySpan"/>
-        /// provides write acess to copied value.
+        /// When done with the returned span, callers should call <see cref="GCHandle.Free"/> on the returned <paramref name="pinnedHandle"/>
+        /// if and only if the <see cref="GCHandle.IsAllocated"/> property of <paramref name="pinnedHandle"/>
+        /// is <c>true</c>.
         /// </para>
-        /// <para>
-        /// If <paramref name="isCopy"/> is <c>false</c>, the span wraps directly
-        /// over the specified <paramref name="input"/> value. <paramref name="copySpan"/>
-        /// will be set to an empy span.
-        /// </para>
-        /// </returns>
-        public static ReadOnlySpan<T> GetReadOnlySpanOrCopy<T>(in T input, out bool isCopy, out Span<T> copySpan)
+        /// </remarks>
+        public static unsafe ReadOnlySpan<T> GetPinnedReadOnlySpan<T>(in T reference, object container, out GCHandle pinnedHandle)
         {
             if (IsCreateSpanSupported)
             {
-                isCopy = false;
-                copySpan = Span<T>.Empty;
-                return CreateSpanInvoker<T>.CreateReadOnlySpan(
-                    ref Unsafe.AsRef(input), length: 1);
+                pinnedHandle = default;
+                return CreateReadOnlySpanUnsafe(reference);
             }
             else
             {
-                isCopy = true;
-                copySpan = new[] { input };
-                return copySpan;
+                pinnedHandle = GCHandle.Alloc(container, GCHandleType.Pinned);
+                return GetStackLocalSpanUnsafe(ref Unsafe.AsRef(reference));
             }
+        }
+
+        private static Span<T> CreateSpanUnsafe<T>(ref T input) =>
+            CreateSpanInvoker<T>.CreateSpan(ref input, length: 1);
+
+        private static ReadOnlySpan<T> CreateReadOnlySpanUnsafe<T>(in T input) =>
+            CreateSpanInvoker<T>.CreateReadOnlySpan(ref Unsafe.AsRef(input), length: 1);
+
+        private static unsafe Span<T> GetStackLocalSpanUnsafe<T>(ref T input)
+        {
+            void* ptr = Unsafe.AsPointer(ref input);
+            return new Span<T>(ptr, length: 1);
         }
     }
 }
