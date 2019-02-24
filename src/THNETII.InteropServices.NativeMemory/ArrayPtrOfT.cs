@@ -70,7 +70,8 @@ namespace THNETII.InteropServices.NativeMemory
         /// An empty span if <paramref name="count"/> is <c>0</c> (zero) or less;<br/>
         /// otherwise a <see cref="Span{T}"/> that starts at the <see cref="IIntPtr.Pointer"/> of <paramref name="ptr"/> and has a <see cref="Span{T}.Length"/> of <paramref name="count"/>.
         /// </returns>
-        public static Span<T> AsSpan<T>(this IArrayPtr<T> ptr, int count) where T : struct =>
-            (ptr?.Pointer).GetValueOrDefault().AsRefStructSpan<T>(count);
+        public static Span<T> AsSpan<TPtr, T>(this TPtr ptr, int count)
+            where TPtr : struct, IArrayPtr<T>
+            where T : struct => ptr.Pointer.AsRefStructSpan<T>(count);
     }
 }

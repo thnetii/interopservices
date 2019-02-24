@@ -13,10 +13,9 @@ namespace THNETII.InteropServices.NativeMemory
         private static Span<T> AsRefStructSpanUnsafe<T>(this IntPtr ptr, int count)
             where T : struct
         {
-            Span<T> span;
             try
             {
-                unsafe { span = new Span<T>(ptr.ToPointer(), count); }
+                unsafe { return new Span<T>(ptr.ToPointer(), count); }
             }
             catch (ArgumentException argExcept)
             {
@@ -24,7 +23,6 @@ namespace THNETII.InteropServices.NativeMemory
                 throw new ArgumentException(argExcept.Message, paramName: nameof(T), argExcept);
 #pragma warning restore CA2208 // Instantiate argument exceptions correctly
             }
-            return span;
         }
 
         /// <summary>
