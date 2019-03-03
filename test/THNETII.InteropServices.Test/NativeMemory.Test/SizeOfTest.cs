@@ -16,6 +16,33 @@ namespace THNETII.InteropServices.NativeMemory.Test
         }
 
         [Fact]
+        public void SizeOfCharCorrect() => Assert.Equal(2, SizeOf<char>.Bytes);
+
+        [Fact]
+        public static void SizeOfInt16Correct()
+        {
+            Assert.Equal(2, SizeOf<short>.Bytes);
+            Assert.Equal(16, SizeOf<short>.Bits);
+        }
+
+        [Fact]
+        public static void SizeOfInt32Correct()
+        {
+            Assert.Equal(4, SizeOf<int>.Bytes);
+            Assert.Equal(32, SizeOf<int>.Bits);
+        }
+
+        [Fact]
+        public static void SizeOfInt64Correct()
+        {
+            Assert.Equal(8, SizeOf<long>.Bytes);
+            Assert.Equal(64, SizeOf<long>.Bits);
+        }
+
+        [Fact]
+        public static void SizeOfGuidCorrect() => Assert.Equal(128, SizeOf<Guid>.Bits);
+
+        [Fact]
         public void SizeOfPointerCorrect()
         {
             Assert.Equal(IntPtr.Size, SizeOf<IntPtr>.Bytes);

@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 #if !NETSTANDARD1_3
 using System;
-using System.Reflection;
 #endif // !NETSTANDARD1_3
 
 namespace THNETII.InteropServices.NativeMemory
@@ -75,12 +76,25 @@ namespace THNETII.InteropServices.NativeMemory
     [SuppressMessage("Design", "CA1000: Do not declare static members on generic types")]
     public static class SizeOf<T>
     {
+        private static int CalculateByteSize()
+        {
+            var type = typeof(T)
+#if NETSTANDARD1_3 || NETSTANDARD1_6
+                .GetTypeInfo()
+#endif // NETSTANDARD1_3 || NETSTANDARD1_6
+                ;
+            if (type.IsPrimitive && type.IsValueType)
+                return Unsafe.SizeOf<T>();
+            return Marshal.SizeOf<T>();
+        }
+
         /// <summary>
         /// Gets the number of bytes that the type will occupy in native memory
         /// when marshaled.
         /// </summary>
         /// <value>The cached result from calling the static <see cref="Marshal.SizeOf{T}()"/> method of the <see cref="Marshal"/> class.</value>
-        public static int Bytes { get; } = Marshal.SizeOf<T>();
+        /// <remarks>For primitive value tasks the more reliable <see cref="Unsafe.SizeOf{T}"/> method of the <see cref="Unsafe"/> class is used.</remarks>
+        public static int Bytes { get; } = CalculateByteSize();
 
         /// <summary>
         /// Gets the number of bits that the type will occupy in native memory
