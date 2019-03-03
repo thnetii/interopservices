@@ -198,5 +198,73 @@ namespace THNETII.InteropServices.NativeMemory
                 default: throw new PlatformNotSupportedException($"System Default Char size of {Marshal.SystemDefaultCharSize} bytes is not supported.");
             }
         }
+
+#if !NETSTANDARD1_3 && !NETSTANDARD1_6
+        private static unsafe Span<T> ToDefaultDelimitedSpan<T>(this IntPtr ptr)
+            where T : struct, IEquatable<T>
+        {
+            if (ptr == IntPtr.Zero)
+                return Span<T>.Empty;
+            IntPtr pagePtr = ptr;
+            int totalLength = 0;
+            int segmentLength = GetRemainingBytesInPage(pagePtr);
+            do
+            {
+                Span<byte> byteSpan = new Span<byte>(pagePtr.ToPointer(), segmentLength);
+                Span<T> pageSpan = MemoryMarshal.Cast<byte, T>(byteSpan);
+                int endIdx = pageSpan.IndexOf(default(T));
+                if (endIdx >= 0)
+                {
+                    checked { totalLength += endIdx; }
+                    break;
+                }
+                checked { totalLength += pageSpan.Length; }
+                pagePtr += (pageSpan.Length * SizeOf<T>.Bytes);
+                segmentLength = GetRemainingBytesInPage(pagePtr) + Environment.SystemPageSize;
+            } while (true);
+            return new Span<T>(ptr.ToPointer(), totalLength);
+
+            int GetRemainingBytesInPage(IntPtr pPageMem)
+            {
+                long addr = pPageMem.ToInt64();
+                int pageOffset = (int)(addr % Environment.SystemPageSize);
+                if (pageOffset == 0)
+                    return 0;
+                return Environment.SystemPageSize - pageOffset;
+            }
+        }
+
+        /// <summary>
+        /// Interprets a pointer to a zero-terminated byte sequence as a span of
+        /// <see cref="byte"/> values up to, but excluding the terminating null-byte.
+        /// </summary>
+        /// <param name="ptr">A pointer to null-byte terminated data.</param>
+        /// <remarks>
+        /// The returned span is limited to a maximum size of <see cref="int.MaxValue"/> bytes.
+        /// Passing a pointer to a larger, non-terminated memory area will raise an <see cref="OverflowException"/>.
+        /// </remarks>
+        /// <exception cref="OverflowException">No null-terminating byte within the first (2^31 - 1) bytes found.</exception>
+        public static Span<byte> ToZeroTerminatedByteSpan(this IntPtr ptr) =>
+            ToDefaultDelimitedSpan<byte>(ptr);
+
+        /// <summary>
+        /// Interprets a Unicode UTF-16 string pointer (<c>PWSTR</c>, <c>LPWSTR</c> or <c>wchar_t</c> pointer in C) as
+        /// a span of <see cref="char"/> values up to, but excluding the terminating null-character.
+        /// </summary>
+        /// <param name="ptr">A pointer to the start of a Unicode UTF-16 string.</param>
+        /// <returns>
+        /// A Span of <see cref="char"/> values starting at the memory address pointed to
+        /// by <paramref name="ptr"/> and spanning up to, but excluding the first
+        /// encountered null-character (<c>'\0'</c>). If <paramref name="ptr"/> is <see cref="IntPtr.Zero"/> an empty
+        /// span is returned.
+        /// </returns>
+        /// <remarks>
+        /// The returned span is limited to a maximum size of <see cref="int.MaxValue"/> characters.
+        /// Passing a pointer to a larger, non-terminated memory area will raise an <see cref="OverflowException"/>.
+        /// </remarks>
+        /// <exception cref="OverflowException">No null-terminating character within the first (2^31 - 1) characters found.</exception>
+        public static Span<char> ToZeroTerminatedUnicodeSpan(this IntPtr ptr) =>
+            ToDefaultDelimitedSpan<char>(ptr);
+#endif // !NETSTANDARD1_3 && !NETSTANDARD1_6
     }
 }
