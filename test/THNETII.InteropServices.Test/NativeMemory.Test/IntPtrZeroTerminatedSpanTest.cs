@@ -62,13 +62,13 @@ namespace THNETII.InteropServices.NativeMemory.Test
         public static unsafe void MoreThanOnePageByteArrayPointerToZeroTerminatedByteSpanHasCorrectLength()
         {
             int size = Environment.SystemPageSize + (Environment.SystemPageSize / 2);
-            var ptr = Marshal.AllocCoTaskMem(size);
+            var ptr = Marshal.AllocCoTaskMem(size + 1);
             Assert.NotEqual(IntPtr.Zero, ptr);
             try
             {
                 var expected = new Span<byte>(ptr.ToPointer(), size);
                 expected.Fill(42);
-                Marshal.WriteByte(ptr, size + 1, 0);
+                Marshal.WriteByte(ptr, size, 0);
 
                 var actual = ptr.ToZeroTerminatedByteSpan();
 
