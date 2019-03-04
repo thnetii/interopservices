@@ -199,7 +199,25 @@ namespace THNETII.InteropServices.NativeMemory
             }
         }
 
-#if !NETSTANDARD1_3 && !NETSTANDARD1_6
+#if NETSTANDARD1_3 || NETSTANDARD1_6
+        /// <exception cref="OverflowException"/>
+        [SuppressMessage("Usage", "PC001: API not supported on all platforms", Justification = "https://github.com/dotnet/platform-compat/issues/123")]
+        private static unsafe Span<T> ToDefaultDelimitedSpan<T>(this IntPtr ptr)
+            where T : struct, IEquatable<T>
+        {
+            if (ptr == IntPtr.Zero)
+                return Span<T>.Empty;
+            int length;
+            var maxSpan = new Span<T>(ptr.ToPointer(), int.MaxValue);
+            for (length = 0; true; length = checked(length + 1))
+            {
+                if (maxSpan[length].Equals(default))
+                    break;
+            }
+            return maxSpan.Slice(start: 0, length);
+        }
+#else // !NETSTANDARD1_3 && !NETSTANDARD1_6
+        /// <exception cref="OverflowException"/>
         private static unsafe Span<T> ToDefaultDelimitedSpan<T>(this IntPtr ptr)
             where T : struct, IEquatable<T>
         {
@@ -233,6 +251,7 @@ namespace THNETII.InteropServices.NativeMemory
                 return Environment.SystemPageSize - pageOffset;
             }
         }
+#endif // !NETSTANDARD1_3 && !NETSTANDARD1_6
 
         /// <summary>
         /// Interprets a pointer to a zero-terminated byte sequence as a span of
@@ -265,6 +284,5 @@ namespace THNETII.InteropServices.NativeMemory
         /// <exception cref="OverflowException">No null-terminating character within the first (2^31 - 1) characters found.</exception>
         public static Span<char> ToZeroTerminatedUnicodeSpan(this IntPtr ptr) =>
             ToDefaultDelimitedSpan<char>(ptr);
-#endif // !NETSTANDARD1_3 && !NETSTANDARD1_6
     }
 }
