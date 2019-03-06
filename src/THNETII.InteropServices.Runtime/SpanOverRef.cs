@@ -117,7 +117,7 @@ namespace THNETII.InteropServices.Runtime
         /// </returns>
         /// <remarks>
         /// <note>
-        /// If <see cref="IsCreateSpanSupported"/> is <c>false</c>, calling this
+        /// If <see cref="IsCreateSpanSupported"/> is <see langword="false"/>, calling this
         /// method is unsafe and can lead to access violation exceptions when
         /// <paramref name="reference"/> is located on the heap without being fixed/pinned.
         /// In such cases, you should call <see cref="GetPinnedSpan{T}(ref T, object, out GCHandle)"/> instead.
@@ -146,7 +146,7 @@ namespace THNETII.InteropServices.Runtime
         /// </returns>
         /// <remarks>
         /// <note>
-        /// If <see cref="IsCreateSpanSupported"/> is <c>false</c>, calling this
+        /// If <see cref="IsCreateSpanSupported"/> is <see langword="false"/>, calling this
         /// method is unsafe and can lead to access violation exceptions when
         /// <paramref name="reference"/> is located on the heap without being fixed/pinned.
         /// In such cases, you should call <see cref="GetPinnedSpan{T}(ref T, object, out GCHandle)"/> instead.
@@ -177,14 +177,14 @@ namespace THNETII.InteropServices.Runtime
         /// A <see cref="Span{T}"/> value with a length of <c>1</c>.
         /// </returns>
         /// <remarks>
-        /// If <see cref="IsCreateSpanSupported"/> returns <c>true</c>, the runtime
+        /// If <see cref="IsCreateSpanSupported"/> returns <see langword="true"/>, the runtime
         /// supports creating spans without pinning <paramref name="container"/>. In that case,
         /// <paramref name="pinnedHandle"/> is set to its default value and its
-        /// <see cref="GCHandle.IsAllocated"/> property will be <c>false</c>.
+        /// <see cref="GCHandle.IsAllocated"/> property will be <see langword="false"/>.
         /// <para>
         /// When done with the returned span, callers should call <see cref="GCHandle.Free"/> on the returned <paramref name="pinnedHandle"/>
         /// if and only if the <see cref="GCHandle.IsAllocated"/> property of <paramref name="pinnedHandle"/>
-        /// is <c>true</c>.
+        /// is <see langword="true"/>.
         /// </para>
         /// </remarks>
         public static unsafe Span<T> GetPinnedSpan<T>(ref T reference, object container, out GCHandle pinnedHandle)
@@ -213,14 +213,14 @@ namespace THNETII.InteropServices.Runtime
         /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
         /// </returns>
         /// <remarks>
-        /// If <see cref="IsCreateSpanSupported"/> returns <c>true</c>, the runtime
+        /// If <see cref="IsCreateSpanSupported"/> returns <see langword="true"/>, the runtime
         /// supports creating spans without pinning <paramref name="container"/>. In that case,
         /// <paramref name="pinnedHandle"/> is set to its default value and its
-        /// <see cref="GCHandle.IsAllocated"/> property will be <c>false</c>.
+        /// <see cref="GCHandle.IsAllocated"/> property will be <see langword="false"/>.
         /// <para>
         /// When done with the returned span, callers should call <see cref="GCHandle.Free"/> on the returned <paramref name="pinnedHandle"/>
         /// if and only if the <see cref="GCHandle.IsAllocated"/> property of <paramref name="pinnedHandle"/>
-        /// is <c>true</c>.
+        /// is <see langword="true"/>.
         /// </para>
         /// </remarks>
         public static unsafe ReadOnlySpan<T> GetPinnedReadOnlySpan<T>(in T reference, object container, out GCHandle pinnedHandle)

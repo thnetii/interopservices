@@ -58,7 +58,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="ptr">The pointer to marshal.</param>
         /// <param name="length">The number of items in the array.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is equal to <see cref="IntPtr.Zero"/>;
+        /// <see langword="null"/> if <paramref name="ptr"/> is equal to <see cref="IntPtr.Zero"/>;
         /// otherwise an array of marshaled instances of type <typeparamref name="T"/>.
         /// </returns>
         public static T[] MarshalAsValueArray<T>(this IntPtr ptr, int length)
@@ -82,7 +82,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="ptr">The pointer to marshal.</param>
         /// <param name="length">The number of items in the array.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is equal to <see cref="IntPtr.Zero"/>;
+        /// <see langword="null"/> if <paramref name="ptr"/> is equal to <see cref="IntPtr.Zero"/>;
         /// otherwise an array of marshaled instances of type <typeparamref name="T"/>.
         /// </returns>
         public static T[] MarshalAsReferenceArray<T>(this IntPtr ptr, int length)
@@ -107,7 +107,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// </summary>
         /// <param name="ptr">The pointer to marshal.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
+        /// <see langword="null"/> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
         /// A managed string instance containing a copy of the unmanaged string.
         /// </returns>
         public static string MarshalAsBSTR(this IntPtr ptr) => Marshal.PtrToStringBSTR(ptr);
@@ -118,7 +118,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// </summary>
         /// <param name="ptr">The pointer to marshal.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
+        /// <see langword="null"/> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
         /// A managed string instance containing a copy of the unmanaged string.
         /// </returns>
         public static string MarshalAsAnsiString(this IntPtr ptr) => Marshal.PtrToStringAnsi(ptr);
@@ -129,7 +129,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="ptr">The pointer to marshal.</param>
         /// <param name="length">The non-negative number of single-byte characters to copy.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
+        /// <see langword="null"/> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
         /// A managed string instance containing a copy of the unmanaged string.
         /// </returns>
         /// <exception cref="ArgumentException"><paramref name="length"/> is negative.</exception>
@@ -141,7 +141,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// </summary>
         /// <param name="ptr">The pointer to marshal.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
+        /// <see langword="null"/> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
         /// A managed string instance containing a copy of the unmanaged string.
         /// </returns>
         public static string MarshalAsUnicodeString(this IntPtr ptr) => Marshal.PtrToStringUni(ptr);
@@ -152,7 +152,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="ptr">The pointer to marshal.</param>
         /// <param name="length">The non-negative number of two-byte UTF-16 characters to copy.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
+        /// <see langword="null"/> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
         /// A managed string instance containing a copy of the unmanaged string.
         /// </returns>
         public static string MarshalAsUnicodeString(this IntPtr ptr, int length) => Marshal.PtrToStringUni(ptr, length);
@@ -163,7 +163,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// </summary>
         /// <param name="ptr">The pointer to marshal.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
+        /// <see langword="null"/> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
         /// A managed string instance containing a copy of the unmanaged string.
         /// </returns>
         /// <exception cref="PlatformNotSupportedException" />
@@ -184,7 +184,7 @@ namespace THNETII.InteropServices.NativeMemory
         /// <param name="ptr">The pointer to marshal.</param>
         /// <param name="length">The non-negative number of characters to copy.</param>
         /// <returns>
-        /// <c>null</c> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
+        /// <see langword="null"/> if <paramref name="ptr"/> is <see cref="IntPtr.Zero"/>; otherwise,
         /// A managed string instance containing a copy of the unmanaged string.
         /// </returns>
         /// <exception cref="PlatformNotSupportedException" />
