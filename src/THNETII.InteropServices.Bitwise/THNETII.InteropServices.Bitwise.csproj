@@ -4,25 +4,15 @@
   <PropertyGroup>
     <LangVersion>7.3</LangVersion>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard1.3;netstandard1.6;netstandard2.0</TargetFrameworks>
-    <!--<TargetFramework>netstandard2.0</TargetFramework>-->
-    <!--<TargetFramework>netcoreapp2.1</TargetFramework>-->
+    <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>portable</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Description></Description>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard1.6'">
-    <PackageReference Include="System.Reflection" Version="4.3.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.5.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!--<ProjectReference Include="..\THNETII.InteropServices.Runtime\THNETII.InteropServices.Runtime.csproj" />-->
   </ItemGroup>
 
 </Project>
