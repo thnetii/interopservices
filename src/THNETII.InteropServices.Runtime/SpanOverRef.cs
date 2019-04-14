@@ -108,10 +108,12 @@ namespace THNETII.InteropServices.Runtime
         }
 
         /// <summary>
-        /// Creates a writable single-item span of the specified reference.
+        /// Creates a writable span of the specified reference and, optionally,
+        /// over the values coming after it in contiguous memory.
         /// </summary>
         /// <typeparam name="T">The type of the item in the returned span.</typeparam>
         /// <param name="reference">A reference to the value to span over.</param>
+        /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
         /// <returns>
         /// A <see cref="Span{T}"/> value with a length of <c>1</c>.
         /// </returns>
@@ -120,7 +122,7 @@ namespace THNETII.InteropServices.Runtime
         /// If <see cref="IsCreateSpanSupported"/> is <see langword="false"/>, calling this
         /// method is unsafe and can lead to access violation exceptions when
         /// <paramref name="reference"/> is located on the heap without being fixed/pinned.
-        /// In such cases, you should call <see cref="GetPinnedSpan{T}(ref T, object, out GCHandle)"/> instead.
+        /// In such cases, you should call <see cref="GetPinnedSpan{T}(ref T, object, out GCHandle, int)"/> instead.
         /// </note>
         /// <para>
         /// If <paramref name="reference"/> is stack-local, the returned span is
@@ -128,19 +130,21 @@ namespace THNETII.InteropServices.Runtime
         /// stack frame.
         /// </para>
         /// </remarks>
-        public static Span<T> GetSpan<T>(ref T reference)
+        public static Span<T> GetSpan<T>(ref T reference, int length = 1)
         {
             if (IsCreateSpanSupported)
-                return CreateSpanUnsafe(ref reference);
+                return CreateSpanUnsafe(ref reference, length);
             else
-                return GetStackLocalSpanUnsafe(ref reference);
+                return GetStackLocalSpanUnsafe(ref reference, length);
         }
 
         /// <summary>
-        /// Creates a read-only single-item span of the specified reference.
+        /// Creates a read-only span of the specified reference and, optionally,
+        /// over the values coming after it in contiguous memory.
         /// </summary>
         /// <typeparam name="T">The type of the item in the returned span.</typeparam>
         /// <param name="reference">A reference to the value to span over.</param>
+        /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
         /// <returns>
         /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
         /// </returns>
@@ -149,7 +153,7 @@ namespace THNETII.InteropServices.Runtime
         /// If <see cref="IsCreateSpanSupported"/> is <see langword="false"/>, calling this
         /// method is unsafe and can lead to access violation exceptions when
         /// <paramref name="reference"/> is located on the heap without being fixed/pinned.
-        /// In such cases, you should call <see cref="GetPinnedSpan{T}(ref T, object, out GCHandle)"/> instead.
+        /// In such cases, you should call <see cref="GetPinnedSpan{T}(ref T, object, out GCHandle, int)"/> instead.
         /// </note>
         /// <para>
         /// If <paramref name="reference"/> is stack-local, the returned span is
@@ -157,22 +161,23 @@ namespace THNETII.InteropServices.Runtime
         /// stack frame.
         /// </para>
         /// </remarks>
-        public static ReadOnlySpan<T> GetReadOnlySpan<T>(in T reference)
+        public static ReadOnlySpan<T> GetReadOnlySpan<T>(in T reference, int length = 1)
         {
             if (IsCreateSpanSupported)
-                return CreateReadOnlySpanUnsafe(reference);
+                return CreateReadOnlySpanUnsafe(reference, length);
             else
-                return GetStackLocalSpanUnsafe(ref Unsafe.AsRef(reference));
+                return GetStackLocalSpanUnsafe(ref Unsafe.AsRef(reference), length);
         }
 
         /// <summary>
-        /// Creates a writable single-item span of the specified reference and
+        /// Creates a writable span of the specified reference and
         /// pins the object it is contained in to ensure the span remains valid.
         /// </summary>
         /// <typeparam name="T">The type of the item in the returned span.</typeparam>
         /// <param name="reference">A reference to the value to span over.</param>
         /// <param name="container">The object on the heap where <paramref name="reference"/> is contained in.</param>
         /// <param name="pinnedHandle">Receives the <see cref="GCHandle"/> that was allocated for pinning <paramref name="container"/>. <see cref="GCHandle.IsAllocated"/> must be checked before calling <see cref="GCHandle.Free"/>.</param>
+        /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
         /// <returns>
         /// A <see cref="Span{T}"/> value with a length of <c>1</c>.
         /// </returns>
@@ -187,28 +192,29 @@ namespace THNETII.InteropServices.Runtime
         /// is <see langword="true"/>.
         /// </para>
         /// </remarks>
-        public static unsafe Span<T> GetPinnedSpan<T>(ref T reference, object container, out GCHandle pinnedHandle)
+        public static unsafe Span<T> GetPinnedSpan<T>(ref T reference, object container, out GCHandle pinnedHandle, int length = 1)
         {
             if (IsCreateSpanSupported)
             {
                 pinnedHandle = default;
-                return CreateSpanUnsafe(ref reference);
+                return CreateSpanUnsafe(ref reference, length);
             }
             else
             {
                 pinnedHandle = GCHandle.Alloc(container, GCHandleType.Pinned);
-                return GetStackLocalSpanUnsafe(ref reference);
+                return GetStackLocalSpanUnsafe(ref reference, length);
             }
         }
 
         /// <summary>
-        /// Creates a read-only single-item span of the specified reference and
+        /// Creates a read-only span of the specified reference and
         /// pins the object it is contained in to ensure the span remains valid.
         /// </summary>
         /// <typeparam name="T">The type of the item in the returned span.</typeparam>
         /// <param name="reference">A reference to the value to span over.</param>
         /// <param name="container">The object on the heap where <paramref name="reference"/> is contained in.</param>
         /// <param name="pinnedHandle">Receives the <see cref="GCHandle"/> that was allocated for pinning <paramref name="container"/>. <see cref="GCHandle.IsAllocated"/> must be checked before calling <see cref="GCHandle.Free"/>.</param>
+        /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
         /// <returns>
         /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
         /// </returns>
@@ -223,30 +229,30 @@ namespace THNETII.InteropServices.Runtime
         /// is <see langword="true"/>.
         /// </para>
         /// </remarks>
-        public static unsafe ReadOnlySpan<T> GetPinnedReadOnlySpan<T>(in T reference, object container, out GCHandle pinnedHandle)
+        public static unsafe ReadOnlySpan<T> GetPinnedReadOnlySpan<T>(in T reference, object container, out GCHandle pinnedHandle, int length = 1)
         {
             if (IsCreateSpanSupported)
             {
                 pinnedHandle = default;
-                return CreateReadOnlySpanUnsafe(reference);
+                return CreateReadOnlySpanUnsafe(reference, length);
             }
             else
             {
                 pinnedHandle = GCHandle.Alloc(container, GCHandleType.Pinned);
-                return GetStackLocalSpanUnsafe(ref Unsafe.AsRef(reference));
+                return GetStackLocalSpanUnsafe(ref Unsafe.AsRef(reference), length);
             }
         }
 
-        private static Span<T> CreateSpanUnsafe<T>(ref T input) =>
-            CreateSpanInvoker<T>.CreateSpan(ref input, length: 1);
+        private static Span<T> CreateSpanUnsafe<T>(ref T input, int length = 1) =>
+            CreateSpanInvoker<T>.CreateSpan(ref input, length);
 
-        private static ReadOnlySpan<T> CreateReadOnlySpanUnsafe<T>(in T input) =>
-            CreateSpanInvoker<T>.CreateReadOnlySpan(ref Unsafe.AsRef(input), length: 1);
+        private static ReadOnlySpan<T> CreateReadOnlySpanUnsafe<T>(in T input, int length = 1) =>
+            CreateSpanInvoker<T>.CreateReadOnlySpan(ref Unsafe.AsRef(input), length);
 
-        private static unsafe Span<T> GetStackLocalSpanUnsafe<T>(ref T input)
+        private static unsafe Span<T> GetStackLocalSpanUnsafe<T>(ref T input, int length = 1)
         {
             void* ptr = Unsafe.AsPointer(ref input);
-            return new Span<T>(ptr, length: 1);
+            return new Span<T>(ptr, length);
         }
     }
 }
