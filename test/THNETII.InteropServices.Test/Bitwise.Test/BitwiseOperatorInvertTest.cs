@@ -1,5 +1,9 @@
-﻿#if false
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+
 using Xunit;
 
 namespace THNETII.InteropServices.Bitwise.Test
@@ -27,98 +31,39 @@ namespace THNETII.InteropServices.Bitwise.Test
             public byte f2;
         }
 
-        [Fact]
-        public void InvertDefaultInt64()
+        internal static void InvertDefaultValueGeneric<T>()
+            where T : unmanaged
         {
-            long test = default;
-            var inverted = BitwiseOperator.Invert(test);
-            Assert.Equal(~test, inverted);
+            T zero = default;
+            T expectedInverted = default;
+            Span<byte> expectedBytes = MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref expectedInverted, 1));
+            for (int i = 0; i < expectedBytes.Length; i++)
+                expectedBytes[i] = 0b1111_1111;
+
+            BitwiseOperator.Invert(zero, out T inverted);
+
+            Assert.Equal(expectedInverted, inverted);
         }
 
-        [Fact]
-        public void InvertDefaultUInt64()
+        [Theory]
+        [InlineData(typeof(byte)), InlineData(typeof(sbyte))]
+        [InlineData(typeof(ushort)), InlineData(typeof(short))]
+        [InlineData(typeof(uint)), InlineData(typeof(int))]
+        [InlineData(typeof(ulong)), InlineData(typeof(long))]
+        [InlineData(typeof(TestStruct24Bits))]
+        [InlineData(typeof(TestStruct48Bits))]
+        [InlineData(typeof(TestStruct72Bits))]
+        public static void InvertDefaultValue(Type type)
         {
-            ulong test = default;
-            var inverted = BitwiseOperator.Invert(test);
-            Assert.Equal(~test, inverted);
-        }
-
-        [Fact]
-        public void InvertDefaultInt32()
-        {
-            int test = default;
-            var inverted = BitwiseOperator.Invert(test);
-            Assert.Equal(~test, inverted);
-        }
-
-        [Fact]
-        public void InvertDefaultUInt32()
-        {
-            uint test = default;
-            var inverted = BitwiseOperator.Invert(test);
-            Assert.Equal(~test, inverted);
-        }
-
-        [Fact]
-        public void InvertDefaultInt16()
-        {
-            short test = default;
-            var inverted = BitwiseOperator.Invert(test);
-            Assert.Equal((short)(~test), inverted);
-        }
-
-        [Fact]
-        public void InvertDefaultUInt16()
-        {
-            ushort test = default;
-            var inverted = BitwiseOperator.Invert(test);
-            Assert.Equal((ushort)(~test), inverted);
-        }
-
-        [Fact]
-        public void InvertDefaultInt8()
-        {
-            sbyte test = default;
-            var inverted = BitwiseOperator.Invert(test);
-            Assert.Equal((sbyte)(~test), inverted);
-        }
-
-        [Fact]
-        public void InvertDefaultUInt8()
-        {
-            byte test = default;
-            var inverted = BitwiseOperator.Invert(test);
-            Assert.Equal((byte)(~test), inverted);
-        }
-
-        [Fact]
-        public void InvertDefault24BitsStruct()
-        {
-            TestStruct24Bits test = default;
-            var inverted = BitwiseOperator.Invert(test);
-
-            Assert.Equal(unchecked((short)0xFFFF), inverted.f1);
-            Assert.Equal(unchecked((byte)0xFF), inverted.f2);
-        }
-
-        [Fact]
-        public void InvertDefault48BitsStruct()
-        {
-            TestStruct48Bits test = default;
-            var inverted = BitwiseOperator.Invert(test);
-
-            Assert.Equal(unchecked(-1), inverted.f1);
-            Assert.Equal(unchecked((short)0xFFFF), inverted.f2);
-        }
-
-        [Fact]
-        public void InvertDefault72BitsStruct()
-        {
-            TestStruct72Bits test = default;
-            var inverted = BitwiseOperator.Invert(test);
-
-            Assert.Equal(unchecked(-1L), inverted.f1);
-            Assert.Equal(unchecked((byte)0xFF), inverted.f2);
+            MethodInfo definition = typeof(BitwiseOperatorInvertTest)
+                .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+                .Where(mi => mi.Name == nameof(InvertDefaultValueGeneric))
+                .Where(mi => mi.IsGenericMethodDefinition)
+                .Where(mi => mi.GetGenericArguments().Length == 1)
+                .Where(mi => (mi.GetParameters()?.Length ?? 0 )== 0)
+                .First();
+            var generic = definition.MakeGenericMethod(type);
+            generic.Invoke(null, null);
         }
 
         [Theory]
@@ -134,12 +79,15 @@ namespace THNETII.InteropServices.Bitwise.Test
         [InlineData(10)]
         [InlineData(11)]
         [InlineData(12)]
+        [InlineData(13)]
+        [InlineData(14)]
+        [InlineData(15)]
         public void InvertDefaultByteArrayWithLength(int length)
         {
-            var bytes = new byte[length];
-            var inverted = BitwiseOperator.Invert(bytes);
+            ReadOnlySpan<byte> bytes = new byte[length];
+            var inverted = new byte[length];
+            BitwiseOperator.Invert(bytes, inverted);
             Assert.All(inverted, b => Assert.Equal<byte>(0xFF, b));
         }
-    } 
+    }
 }
-#endif
