@@ -46,6 +46,16 @@
         T Read(T storage);
 
         /// <summary>
+        /// Extracts the relevant bits from the specified storage field value
+        /// without shifting them.
+        /// </summary>
+        /// <param name="storage">The full-sized value from which to extract.</param>
+        /// <returns>
+        /// The bits in <paramref name="storage"/> masked with <see cref="Mask"/>.
+        /// </returns>
+        T ReadMasked(T storage);
+
+        /// <summary>
         /// Writes the relevant bits to the specified storage location.
         /// </summary>
         /// <param name="storage">A reference to the value to write to.</param>
@@ -54,5 +64,15 @@
         /// The value of <paramref name="storage"/> after the write completes.
         /// </returns>
         T Write(ref T storage, T value);
+
+        /// <summary>
+        /// Writes the relevant bits to the specified storage location without shifting.
+        /// </summary>
+        /// <param name="storage">A reference to the value to write to.</param>
+        /// <param name="value">The value to set, in the bits as defined by this definition.</param>
+        /// <returns>
+        /// The value of <paramref name="storage"/> after the write completes.
+        /// </returns>
+        T WriteMasked(ref T storage, T value);
     }
 }

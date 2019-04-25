@@ -3,27 +3,27 @@
 namespace THNETII.InteropServices.Bitwise
 {
     /// <summary>
-    /// Represents a 64-bit bitfield.
+    /// Represents a 8-bit bitfield.
     /// </summary>
-    public class Bitfield64 : IBitfield<ulong>, IBitfield<long>
+    public class Bitfield8 : IBitfield<byte>, IBitfield<sbyte>
     {
         /// <summary>
         /// The maximum number of bits for storage values.
         /// </summary>
-        public const int MaximumBits = sizeof(ulong) * 8;
+        public const int MaximumBits = sizeof(byte) * 8;
 
         /// <summary>
         /// Defines a bitfield granting access only to the bit with the
         /// specified index.
         /// </summary>
         /// <param name="index">The zero based index of the bit to access.</param>
-        /// <returns>A 64-bit bitfield definition grating access only to the specified bit.</returns>
+        /// <returns>A 8-bit bitfield definition grating access only to the specified bit.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield64 Bit(int index)
+        public static Bitfield8 Bit(int index)
         {
             try
             {
-                return new Bitfield64(Bitmask.OffsetBitsUInt64(index, count: 1),
+                return new Bitfield8(Bitmask.OffsetBitsUInt8(index, count: 1),
                     shiftAmount: index);
             }
             catch (ArgumentOutOfRangeException e)
@@ -39,10 +39,10 @@ namespace THNETII.InteropServices.Bitwise
         /// </summary>
         /// <param name="mask">The bitmask to use for the bitfield.</param>
         /// <param name="shiftAmount">The number of bits to shift in and output values by.</param>
-        /// <returns>A 64-bit bitfield definition with the specified mask and shit amount.</returns>
+        /// <returns>A 8-bit bitfield definition with the specified mask and shit amount.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="shiftAmount"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield64 FromMask(long mask, int shiftAmount = 0) =>
-            FromMask(unchecked((ulong)mask), shiftAmount);
+        public static Bitfield8 FromMask(sbyte mask, int shiftAmount = 0) =>
+            FromMask(unchecked((byte)mask), shiftAmount);
 
         /// <summary>
         /// Defines a bitfield from the specified mask, optionally shifting the
@@ -50,20 +50,20 @@ namespace THNETII.InteropServices.Bitwise
         /// </summary>
         /// <param name="mask">The bitmask to use for the bitfield.</param>
         /// <param name="shiftAmount">The number of bits to shift in and output values by.</param>
-        /// <returns>A 32-bit bitfield definition with the specified mask and shit amount.</returns>
+        /// <returns>A 8-bit bitfield definition with the specified mask and shit amount.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="shiftAmount"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield64 FromMask(ulong mask, int shiftAmount = 0) =>
-            new Bitfield64(mask, shiftAmount);
+        public static Bitfield8 FromMask(byte mask, int shiftAmount = 0) =>
+            new Bitfield8(mask, shiftAmount);
 
         /// <summary>
         /// Defines a bitfield granting access to the specified number of lower
         /// bits.
         /// </summary>
         /// <param name="count">The number of bits to grant access to.</param>
-        /// <returns>A 32-bit bitfield that uses a mask where the <paramref name="count"/> lower bits are set.</returns>
+        /// <returns>A 8-bit bitfield that uses a mask where the <paramref name="count"/> lower bits are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield64 LowBits(int count) =>
-            new Bitfield64(Bitmask.LowerBitsUInt32(count));
+        public static Bitfield8 LowBits(int count) =>
+            new Bitfield8(Bitmask.LowerBitsUInt8(count));
 
         /// <summary>
         /// Defines a bitfield granting access to the specified number of
@@ -71,47 +71,47 @@ namespace THNETII.InteropServices.Bitwise
         /// </summary>
         /// <param name="offset">The 0-based index of the lowest bit to grant access to.</param>
         /// <param name="count">The number of bits to grant access to.</param>
-        /// <returns>A 32-bit bitfield that uses a mask where <paramref name="count"/> bits starting a the <paramref name="offset"/> bit are set.</returns>
+        /// <returns>A 8-bit bitfield that uses a mask where <paramref name="count"/> bits starting a the <paramref name="offset"/> bit are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or exceeds the remaining number of bits.</exception>
-        public static Bitfield64 SelectBits(int offset, int count) =>
-            new Bitfield64(Bitmask.OffsetBitsUInt32(offset, count), offset);
+        public static Bitfield8 SelectBits(int offset, int count) =>
+            new Bitfield8(Bitmask.OffsetBitsUInt8(offset, count), offset);
 
         /// <summary>
         /// Defines a bitfield grating access to all remaining bits starting
         /// from the specified offset.
         /// </summary>
         /// <param name="offset">The 0-based index of the lowest bit to grant access to.</param>
-        /// <returns>A 32-bit bitfield that uses a mask where all bits starting from the bit at position <paramref name="offset"/> are set.</returns>
+        /// <returns>A 8-bit bitfield that uses a mask where all bits starting from the bit at position <paramref name="offset"/> are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield64 RemainingBits(int offset) =>
-            new Bitfield64(Bitmask.OffsetRemainingUInt32(offset), offset);
+        public static Bitfield8 RemainingBits(int offset) =>
+            new Bitfield8(Bitmask.OffsetRemainingUInt8(offset), offset);
 
         /// <summary>
         /// Defines a bitfield granting access to the specified number of high
         /// bits.
         /// </summary>
         /// <param name="count">The number of bits to grant access to.</param>
-        /// <returns>A 32-bit bitfield that uses a mask where the <paramref name="count"/> highest bits are set.</returns>
+        /// <returns>A 8-bit bitfield that uses a mask where the <paramref name="count"/> highest bits are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield64 HighBits(int count) =>
-            new Bitfield64(Bitmask.HigherBitsUInt32(count), MaximumBits - count);
+        public static Bitfield8 HighBits(int count) =>
+            new Bitfield8(Bitmask.HigherBitsUInt8(count), MaximumBits - count);
 
-        int IBitfield<ulong>.MaximumBits => MaximumBits;
+        int IBitfield<byte>.MaximumBits => MaximumBits;
 
-        int IBitfield<long>.MaximumBits => MaximumBits;
+        int IBitfield<sbyte>.MaximumBits => MaximumBits;
 
         /// <summary>
         /// Gets the mask that is used to access the relevant bits.
         /// </summary>
         /// <value>A value where all bits that the definition grants access to are set.</value>
-        public ulong Mask { get; }
+        public byte Mask { get; }
 
         /// <summary>
         /// Gets a value indicating the bits that are ignored by read/write accesses through this definition.
         /// </summary>
         /// <value>The bitwise inverse of <see cref="Mask"/>.</value>
-        public ulong InverseMask { get; }
+        public byte InverseMask { get; }
 
         /// <summary>
         /// Gets the number of bits in- and output values are shifted by.
@@ -119,14 +119,14 @@ namespace THNETII.InteropServices.Bitwise
         /// <value>A non-negative integer number that does not exceed <see cref="MaximumBits"/>.</value>
         public int ShiftAmount { get; }
 
-        long IBitfield<long>.Mask => unchecked((long)Mask);
+        sbyte IBitfield<sbyte>.Mask => unchecked((sbyte)Mask);
 
-        long IBitfield<long>.InverseMask => unchecked((long)InverseMask);
+        sbyte IBitfield<sbyte>.InverseMask => unchecked((sbyte)InverseMask);
 
-        private Bitfield64(ulong mask, int shiftAmount = 0)
+        private Bitfield8(byte mask, int shiftAmount = 0)
         {
             Mask = mask;
-            InverseMask = ~mask;
+            InverseMask = (byte)~mask;
             if (shiftAmount < 0 || shiftAmount > MaximumBits)
             {
                 throw new ArgumentOutOfRangeException(
@@ -153,7 +153,7 @@ namespace THNETII.InteropServices.Bitwise
         /// intructions treat the operands as unsigned values. E.g. the shift
         /// is performed as a logical shift rather than an arithmetric one.
         /// </remarks>
-        public ulong Read(ulong storage) => ReadMasked(storage) >> ShiftAmount;
+        public byte Read(byte storage) => (byte)((uint)ReadMasked(storage) >> ShiftAmount);
 
         /// <summary>
         /// Extracts the bits as defined by this defintion from the specified
@@ -165,7 +165,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <see cref="Mask"/>.
         /// <para><c><paramref name="storage"/> &amp; <see cref="Mask"/></c></para>
         /// </returns>
-        public ulong ReadMasked(ulong storage) => (storage & Mask);
+        public byte ReadMasked(byte storage) => (byte)((uint)storage & Mask);
 
         /// <summary>
         /// Extracts the bits as defined by this defintion from the specified
@@ -183,8 +183,8 @@ namespace THNETII.InteropServices.Bitwise
         /// intructions treat the operands as unsigned values. E.g. the shift
         /// is performed as a logical shift rather than an arithmetric one.
         /// </remarks>
-        public long Read(long storage) =>
-            unchecked((long)Read(unchecked((ulong)storage)));
+        public sbyte Read(sbyte storage) =>
+            unchecked((sbyte)Read(unchecked((byte)storage)));
 
         /// <summary>
         /// Extracts the bits as defined by this defintion from the specified
@@ -196,8 +196,8 @@ namespace THNETII.InteropServices.Bitwise
         /// <see cref="Mask"/>.
         /// <para><c><paramref name="storage"/> &amp; <see cref="Mask"/></c></para>
         /// </returns>
-        public long ReadMasked(long storage) =>
-            unchecked((long)ReadMasked(unchecked((ulong)storage)));
+        public sbyte ReadMasked(sbyte storage) =>
+            unchecked((sbyte)ReadMasked(unchecked((byte)storage)));
 
         /// <summary>
         /// Sets the bits as definied by this definition in the specified storage
@@ -227,8 +227,8 @@ namespace THNETII.InteropServices.Bitwise
         /// is performed as a logical shift rather than an arithmetric one.
         /// </para>
         /// </remarks>
-        public ulong Write(ref ulong storage, ulong value) =>
-            WriteMasked(ref storage, value << ShiftAmount);
+        public byte Write(ref byte storage, byte value) =>
+            WriteMasked(ref storage, (byte)((uint)value << ShiftAmount));
 
         /// <summary>
         /// Sets the bits as definied by this definition in the specified storage
@@ -251,8 +251,8 @@ namespace THNETII.InteropServices.Bitwise
         /// <paramref name="storage"/>.
         /// </para>
         /// </remarks>
-        public ulong WriteMasked(ref ulong storage, ulong value) =>
-            storage = (storage & InverseMask) | (value & Mask);
+        public byte WriteMasked(ref byte storage, byte value) =>
+            storage = (byte)(((uint)storage & InverseMask) | ((uint)value & Mask));
 
         /// <summary>
         /// Sets the bits as definied by this definition in the specified storage
@@ -282,8 +282,8 @@ namespace THNETII.InteropServices.Bitwise
         /// is performed as a logical shift rather than an arithmetric one.
         /// </para>
         /// </remarks>
-        public long Write(ref long storage, long value) =>
-            WriteMasked(ref storage, value << ShiftAmount);
+        public sbyte Write(ref sbyte storage, sbyte value) =>
+            WriteMasked(ref storage, (sbyte)((int)value << ShiftAmount));
 
         /// <summary>
         /// Sets the bits as definied by this definition in the specified storage
@@ -306,7 +306,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <paramref name="storage"/>.
         /// </para>
         /// </remarks>
-        public long WriteMasked(ref long storage, long value) =>
-            storage = (storage & (long)InverseMask) | (value & (long)Mask);
+        public sbyte WriteMasked(ref sbyte storage, sbyte value) =>
+            storage = (sbyte)((storage & (sbyte)InverseMask) | (value & (sbyte)Mask));
     }
 }

@@ -19,7 +19,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <param name="index">The zero based index of the bit to access.</param>
         /// <returns>A 32-bit bitfield definition grating access only to the specified bit.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield32 DefineSingleBit(int index)
+        public static Bitfield32 Bit(int index)
         {
             try
             {
@@ -41,8 +41,8 @@ namespace THNETII.InteropServices.Bitwise
         /// <param name="shiftAmount">The number of bits to shift in and output values by.</param>
         /// <returns>A 32-bit bitfield definition with the specified mask and shit amount.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="shiftAmount"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield32 DefineFromMask(int mask, int shiftAmount = 0) =>
-            DefineFromMask(unchecked((uint)mask), shiftAmount);
+        public static Bitfield32 FromMask(int mask, int shiftAmount = 0) =>
+            FromMask(unchecked((uint)mask), shiftAmount);
 
         /// <summary>
         /// Defines a bitfield from the specified mask, optionally shifting the
@@ -52,7 +52,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <param name="shiftAmount">The number of bits to shift in and output values by.</param>
         /// <returns>A 32-bit bitfield definition with the specified mask and shit amount.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="shiftAmount"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield32 DefineFromMask(uint mask, int shiftAmount = 0) =>
+        public static Bitfield32 FromMask(uint mask, int shiftAmount = 0) =>
             new Bitfield32(mask, shiftAmount);
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <param name="count">The number of bits to grant access to.</param>
         /// <returns>A 32-bit bitfield that uses a mask where the <paramref name="count"/> lower bits are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield32 DefineLowerBits(int count) =>
+        public static Bitfield32 LowBits(int count) =>
             new Bitfield32(Bitmask.LowerBitsUInt32(count));
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <returns>A 32-bit bitfield that uses a mask where <paramref name="count"/> bits starting a the <paramref name="offset"/> bit are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or exceeds the remaining number of bits.</exception>
-        public static Bitfield32 DefineMiddleBits(int offset, int count) =>
+        public static Bitfield32 SelectBits(int offset, int count) =>
             new Bitfield32(Bitmask.OffsetBitsUInt32(offset, count), offset);
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <param name="offset">The 0-based index of the lowest bit to grant access to.</param>
         /// <returns>A 32-bit bitfield that uses a mask where all bits starting from the bit at position <paramref name="offset"/> are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield32 DefineRemainingBits(int offset) =>
+        public static Bitfield32 RemainingBits(int offset) =>
             new Bitfield32(Bitmask.OffsetRemainingUInt32(offset), offset);
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace THNETII.InteropServices.Bitwise
         /// <param name="count">The number of bits to grant access to.</param>
         /// <returns>A 32-bit bitfield that uses a mask where the <paramref name="count"/> highest bits are set.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is negative or exceeds <see cref="MaximumBits"/>.</exception>
-        public static Bitfield32 DefineHigherBits(int count) =>
+        public static Bitfield32 HighBits(int count) =>
             new Bitfield32(Bitmask.HigherBitsUInt32(count), MaximumBits - count);
 
         int IBitfield<uint>.MaximumBits => MaximumBits;
@@ -153,7 +153,19 @@ namespace THNETII.InteropServices.Bitwise
         /// intructions treat the operands as unsigned values. E.g. the shift
         /// is performed as a logical shift rather than an arithmetric one.
         /// </remarks>
-        public uint Read(uint storage) => (storage & Mask) >> ShiftAmount;
+        public uint Read(uint storage) => ReadMasked(storage) >> ShiftAmount;
+
+        /// <summary>
+        /// Extracts the bits as defined by this defintion from the specified
+        /// storage value without shifting.
+        /// </summary>
+        /// <param name="storage">The value to extract bits from.</param>
+        /// <returns>
+        /// The bitwise AND between <paramref name="storage"/> and
+        /// <see cref="Mask"/>.
+        /// <para><c><paramref name="storage"/> &amp; <see cref="Mask"/></c></para>
+        /// </returns>
+        public uint ReadMasked(uint storage) => (storage & Mask);
 
         /// <summary>
         /// Extracts the bits as defined by this defintion from the specified
@@ -173,6 +185,19 @@ namespace THNETII.InteropServices.Bitwise
         /// </remarks>
         public int Read(int storage) =>
             unchecked((int)Read(unchecked((uint)storage)));
+
+        /// <summary>
+        /// Extracts the bits as defined by this defintion from the specified
+        /// storage value without shifting.
+        /// </summary>
+        /// <param name="storage">The value to extract bits from.</param>
+        /// <returns>
+        /// The bitwise AND between <paramref name="storage"/> and
+        /// <see cref="Mask"/>.
+        /// <para><c><paramref name="storage"/> &amp; <see cref="Mask"/></c></para>
+        /// </returns>
+        public int ReadMasked(int storage) =>
+            unchecked((int)ReadMasked(unchecked((uint)storage)));
 
         /// <summary>
         /// Sets the bits as definied by this definition in the specified storage
@@ -203,7 +228,31 @@ namespace THNETII.InteropServices.Bitwise
         /// </para>
         /// </remarks>
         public uint Write(ref uint storage, uint value) =>
-            storage = (storage & InverseMask) | ((value << ShiftAmount) & Mask);
+            WriteMasked(ref storage, value << ShiftAmount);
+
+        /// <summary>
+        /// Sets the bits as definied by this definition in the specified storage
+        /// value, preserving the previous bit setting of all other bits.
+        /// </summary>
+        /// <param name="storage">A reference to the storage value to write to.</param>
+        /// <param name="value">The bit pattern to set.</param>
+        /// <returns>
+        /// The resulting value of <paramref name="storage"/> of the operation
+        /// has completed.
+        /// <para><c>(<paramref name="storage"/> &amp; <see cref="InverseMask"/>) | (<paramref name="value"/> | <see cref="Mask"/>)</c></para>
+        /// </returns>
+        /// <remarks>
+        /// In order to prevent setting additional bits, <paramref name="value"/>
+        /// is AND-ed with <see cref="Mask"/>.
+        /// <para>
+        /// The value of <paramref name="storage"/> is AND-ed with <see cref="InverseMask"/>
+        /// to clear all writable bits. The result is then OR-ed with the
+        /// masked <paramref name="value"/> and becomes the new value of
+        /// <paramref name="storage"/>.
+        /// </para>
+        /// </remarks>
+        public uint WriteMasked(ref uint storage, uint value) =>
+            storage = (storage & InverseMask) | (value & Mask);
 
         /// <summary>
         /// Sets the bits as definied by this definition in the specified storage
@@ -233,11 +282,31 @@ namespace THNETII.InteropServices.Bitwise
         /// is performed as a logical shift rather than an arithmetric one.
         /// </para>
         /// </remarks>
-        public int Write(ref int storage, int value)
-        {
-            uint tmp = unchecked((uint)storage);
-            storage = unchecked((int)Write(ref tmp, unchecked((uint)value)));
-            return storage;
-        }
+        public int Write(ref int storage, int value) =>
+            WriteMasked(ref storage, value << ShiftAmount);
+
+        /// <summary>
+        /// Sets the bits as definied by this definition in the specified storage
+        /// value, preserving the previous bit setting of all other bits.
+        /// </summary>
+        /// <param name="storage">A reference to the storage value to write to.</param>
+        /// <param name="value">The bit pattern to set.</param>
+        /// <returns>
+        /// The resulting value of <paramref name="storage"/> of the operation
+        /// has completed.
+        /// <para><c>(<paramref name="storage"/> &amp; <see cref="InverseMask"/>) | (<paramref name="value"/> | <see cref="Mask"/>)</c></para>
+        /// </returns>
+        /// <remarks>
+        /// In order to prevent setting additional bits, <paramref name="value"/>
+        /// is AND-ed with <see cref="Mask"/>.
+        /// <para>
+        /// The value of <paramref name="storage"/> is AND-ed with <see cref="InverseMask"/>
+        /// to clear all writable bits. The result is then OR-ed with the
+        /// masked <paramref name="value"/> and becomes the new value of
+        /// <paramref name="storage"/>.
+        /// </para>
+        /// </remarks>
+        public int WriteMasked(ref int storage, int value) =>
+            storage = (storage & (int)InverseMask) | (value & (int)Mask);
     }
 }
