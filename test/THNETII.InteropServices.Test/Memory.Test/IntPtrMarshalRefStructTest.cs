@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace THNETII.InteropServices.NativeMemory.Test
+namespace THNETII.InteropServices.Memory.Test
 {
     public class IntPtrMarshalRefStructTest
     {

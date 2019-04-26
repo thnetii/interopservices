@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace THNETII.InteropServices.NativeMemory.Test
+namespace THNETII.InteropServices.Memory.Test
 {
     [SuppressMessage("Microsoft.Performance", "CA1812: Avoid uninstantiated internal classes")]
     public class SizeOfTest

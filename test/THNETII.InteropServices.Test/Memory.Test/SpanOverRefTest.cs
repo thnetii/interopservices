@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace THNETII.InteropServices.Runtime.Test
+namespace THNETII.InteropServices.Memory.Test
 {
     public static class SpanOverRefTest
     {

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace THNETII.InteropServices.NativeMemory.Test
+namespace THNETII.InteropServices.Memory.Test
 {
     public static class IntPtrZeroTerminatedSpanTest
     {
@@ -57,6 +57,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
             }
         }
 
+#if !NETCOREAPP1_1
         [Fact]
         [SuppressMessage("Usage", "PC001: API not supported on all platforms", Justification = "https://github.com/dotnet/platform-compat/issues/123")]
         public static unsafe void MoreThanOnePageByteArrayPointerToZeroTerminatedByteSpanHasCorrectLength()
@@ -83,6 +84,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
                 Marshal.FreeCoTaskMem(ptr);
             }
         }
+#endif // !NETCOREAPP1_1
 
         [Fact]
         [SuppressMessage("Usage", "PC001: API not supported on all platforms", Justification = "https://github.com/dotnet/platform-compat/issues/123")]
@@ -157,6 +159,7 @@ namespace THNETII.InteropServices.NativeMemory.Test
             }
         }
 
+#if !NETCOREAPP1_1
         [Fact]
         [SuppressMessage("Usage", "PC001: API not supported on all platforms", Justification = "https://github.com/dotnet/platform-compat/issues/123")]
         public static unsafe void NonAlignedMoreThanOnePageStringPointerToZeroTerminatedUnicodeSpanHasCorrectLength()
@@ -208,5 +211,6 @@ namespace THNETII.InteropServices.NativeMemory.Test
                 Marshal.FreeCoTaskMem(ptr);
             }
         }
+#endif // !NETCOREAPP1_1
     }
 }

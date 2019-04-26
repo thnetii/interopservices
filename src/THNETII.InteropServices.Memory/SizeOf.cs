@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System;
 #endif // !NETSTANDARD1_3
 
-namespace THNETII.InteropServices.NativeMemory
+namespace THNETII.InteropServices.Memory
 {
 #if !NETSTANDARD1_3
     /// <summary>

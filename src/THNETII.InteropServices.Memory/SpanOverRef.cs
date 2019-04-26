@@ -4,7 +4,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace THNETII.InteropServices.Runtime
+#if NETSTANDARD1_3
+using System.Linq;
+#endif // NETSTANDARD1_3
+
+namespace THNETII.InteropServices.Memory
 {
     /// <summary>
     /// Supplies Runtime helper methods to create spans over ref and in values.
@@ -21,10 +25,16 @@ namespace THNETII.InteropServices.Runtime
         static SpanOverRef()
         {
             var memoryMarshalMethods = typeof(MemoryMarshal)
-#if NETSTANDARD1_6
+#if NETSTANDARD1_3 || NETSTANDARD1_6
                 .GetTypeInfo()
+#endif // NETSTANDARD1_3 || NETSTANDARD1_6
+#if NETSTANDARD1_3
+                .GetDeclaredMethods(CreateSpan)
+                .Concat(typeof(MemoryMarshal).GetTypeInfo().GetDeclaredMethods(CreateReadOnlySpan))
+#else // NETSTANDARD1_3
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
 #endif
-                .GetMethods(BindingFlags.Public | BindingFlags.Static);
+                ;
             foreach (MethodInfo mi in memoryMarshalMethods)
             {
                 if (CreateSpanGenericDefinition != null &&
@@ -131,11 +141,12 @@ namespace THNETII.InteropServices.Runtime
         /// </para>
         /// </remarks>
         public static Span<T> GetSpan<T>(ref T reference, int length = 1)
+            where T : struct
         {
             if (IsCreateSpanSupported)
                 return CreateSpanUnsafe(ref reference, length);
             else
-                return GetStackLocalSpanUnsafe(ref reference, length);
+                return GetFixedPointerSpan(ref reference, length);
         }
 
         /// <summary>
@@ -162,11 +173,12 @@ namespace THNETII.InteropServices.Runtime
         /// </para>
         /// </remarks>
         public static ReadOnlySpan<T> GetReadOnlySpan<T>(in T reference, int length = 1)
+            where T : struct
         {
             if (IsCreateSpanSupported)
                 return CreateReadOnlySpanUnsafe(reference, length);
             else
-                return GetStackLocalSpanUnsafe(ref Unsafe.AsRef(reference), length);
+                return GetFixedPointerSpan(ref Unsafe.AsRef(reference), length);
         }
 
         /// <summary>
@@ -202,7 +214,7 @@ namespace THNETII.InteropServices.Runtime
             else
             {
                 pinnedHandle = GCHandle.Alloc(container, GCHandleType.Pinned);
-                return GetStackLocalSpanUnsafe(ref reference, length);
+                return GetUnsafePointerSpan(ref reference, length);
             }
         }
 
@@ -239,7 +251,7 @@ namespace THNETII.InteropServices.Runtime
             else
             {
                 pinnedHandle = GCHandle.Alloc(container, GCHandleType.Pinned);
-                return GetStackLocalSpanUnsafe(ref Unsafe.AsRef(reference), length);
+                return GetUnsafePointerSpan(ref Unsafe.AsRef(reference), length);
             }
         }
 
@@ -249,10 +261,61 @@ namespace THNETII.InteropServices.Runtime
         private static ReadOnlySpan<T> CreateReadOnlySpanUnsafe<T>(in T input, int length = 1) =>
             CreateSpanInvoker<T>.CreateReadOnlySpan(ref Unsafe.AsRef(input), length);
 
-        private static unsafe Span<T> GetStackLocalSpanUnsafe<T>(ref T input, int length = 1)
+        private static unsafe Span<T> GetUnsafePointerSpan<T>(ref T input, int length = 1)
         {
             void* ptr = Unsafe.AsPointer(ref input);
             return new Span<T>(ptr, length);
         }
+
+        internal static unsafe Span<T> GetFixedPointerSpanUnmanaged<T>(ref T input, int length = 1)
+            where T : unmanaged
+        {
+            fixed (T* ptr = &input)
+            {
+                return new Span<T>(ptr, length);
+            }
+        }
+
+        private delegate Span<T> FixedPointerSpanDelegate<T>(ref T input, int length = 1)
+            where T : struct;
+
+        private static readonly Lazy<MethodInfo> GetFixedPointerSpanUnmanagedLazy =
+            new Lazy<MethodInfo>(GetFixedPointerSpanUnmanagedGenericDefinition);
+
+        private static MethodInfo GetFixedPointerSpanUnmanagedGenericDefinition()
+        {
+            return typeof(SpanOverRef)
+#if NETSTANDARD1_3 || NETSTANDARD1_6
+                    .GetTypeInfo()
+#endif // NETSTANDARD1_3 || NETSTANDARD1_6
+#if NETSTANDARD1_3
+                    .GetDeclaredMethod(nameof(GetFixedPointerSpanUnmanaged))
+#else // !NETSTANDARD1_3
+                    .GetMethod(nameof(GetFixedPointerSpanUnmanaged), BindingFlags.NonPublic | BindingFlags.Static)
+#endif // !NETSTANDARD1_3
+                    ;
+        }
+
+        private struct FixedPointerSpanInvoker<T> where T : struct
+        {
+            private static readonly Lazy<FixedPointerSpanDelegate<T>> delegateLazy =
+                new Lazy<FixedPointerSpanDelegate<T>>(MakeDelegate);
+
+            private static FixedPointerSpanDelegate<T> MakeDelegate()
+            {
+                var generic = GetFixedPointerSpanUnmanagedLazy.Value;
+                return (FixedPointerSpanDelegate<T>)generic
+                    .MakeGenericMethod(typeof(T))
+                    .CreateDelegate(typeof(FixedPointerSpanDelegate<T>));
+            }
+
+            public static FixedPointerSpanDelegate<T> Invoke => delegateLazy.Value;
+        }
+
+        public static Span<T> GetFixedPointerSpan<T>(ref T input, int length = 1)
+            where T : struct => FixedPointerSpanInvoker<T>.Invoke(ref input, length);
+
+        public static ReadOnlySpan<T> GetFixedPointerReadOnlySpan<T>(in T input, int length = 1)
+            where T : struct => GetFixedPointerSpan(ref Unsafe.AsRef(input), length);
     }
 }

@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace THNETII.InteropServices.NativeMemory
+namespace THNETII.InteropServices.Memory
 {
     /// <summary>
     /// Provides marshaling extension methods for the <see cref="IntPtr"/> type.
@@ -211,6 +211,8 @@ namespace THNETII.InteropServices.NativeMemory
             var maxSpan = new Span<T>(ptr.ToPointer(), int.MaxValue);
             for (length = 0; true; length = checked(length + 1))
             {
+                if (length == maxSpan.Length)
+                    throw new OverflowException();
                 if (maxSpan[length].Equals(default))
                     break;
             }

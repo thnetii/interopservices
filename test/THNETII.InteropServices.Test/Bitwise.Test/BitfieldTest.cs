@@ -15,17 +15,17 @@ namespace THNETII.InteropServices.Bitwise.Test
         protected abstract T HighestBitSet { get; }
         protected abstract T AllExceptHighestBitSet { get; }
 
-        protected abstract IBitfield<T> DefineSingleBit(int index);
-        protected abstract IBitfield<T> DefineFromMask(T mask, int shiftAmount);
-        protected abstract IBitfield<T> DefineLowerBits(int count);
-        protected abstract IBitfield<T> DefineMiddleBits(int offset, int count);
-        protected abstract IBitfield<T> DefineRemainingBits(int offset);
-        protected abstract IBitfield<T> DefineHigherBits(int offset);
+        protected abstract IBitfield<T> Bit(int index);
+        protected abstract IBitfield<T> FromMask(T mask, int shiftAmount);
+        protected abstract IBitfield<T> LowBits(int count);
+        protected abstract IBitfield<T> SelectBits(int offset, int count);
+        protected abstract IBitfield<T> RemainingBits(int offset);
+        protected abstract IBitfield<T> HighBits(int offset);
 
         [Fact]
         public void ReadLowestBitFromAllBitsSetReturnsOne()
         {
-            var def = DefineSingleBit(0);
+            var def = Bit(0);
             var storage = AllBitsSet;
             Assert.Equal(LowestBitSet, def.Read(storage));
         }
@@ -33,7 +33,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         [Fact]
         public void ReadHighestBitFromAllBitsSetReturnsOne()
         {
-            var def = DefineSingleBit(BitsInT - 1);
+            var def = Bit(BitsInT - 1);
             var storage = AllBitsSet;
             Assert.Equal(LowestBitSet, def.Read(storage));
         }
@@ -41,7 +41,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         [Fact]
         public void ReadLowestBitFromZeroReturnsZero()
         {
-            var def = DefineSingleBit(0);
+            var def = Bit(0);
             var storage = NoBitsSet;
             Assert.Equal(NoBitsSet, def.Read(storage));
         }
@@ -49,7 +49,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         [Fact]
         public void ReadLowestBitFromAllSetExceptLowestReturnsZero()
         {
-            var def = DefineSingleBit(0);
+            var def = Bit(0);
             var storage = AllExceptLowestBitSet;
             Assert.Equal(NoBitsSet, def.Read(storage));
         }
@@ -57,7 +57,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         [Fact]
         public void ReadHighestBitFromZeroReturnsZero()
         {
-            var def = DefineSingleBit(0);
+            var def = Bit(0);
             var storage = NoBitsSet;
             Assert.Equal(NoBitsSet, def.Read(storage));
         }
@@ -65,7 +65,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         [Fact]
         public void ReadHighestBitFromAllSetExceptHighestReturnsZero()
         {
-            var def = DefineSingleBit(0);
+            var def = Bit(0);
             var storage = AllExceptHighestBitSet;
             Assert.Equal(NoBitsSet, def.Read(storage));
         }
@@ -75,7 +75,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         {
             Assert.Throws<ArgumentOutOfRangeException>("index", () =>
             {
-                DefineSingleBit(-1);
+                Bit(-1);
             });
         }
 
@@ -84,14 +84,14 @@ namespace THNETII.InteropServices.Bitwise.Test
         {
             Assert.Throws<ArgumentOutOfRangeException>("index", () =>
             {
-                DefineSingleBit(BitsInT);
+                Bit(BitsInT);
             });
         }
 
         [Fact]
         public void DefineSingleBit0HasCorrectMasks()
         {
-            var def = DefineSingleBit(0);
+            var def = Bit(0);
             Assert.Equal(LowestBitSet, def.Mask);
             Assert.Equal(AllExceptLowestBitSet, def.InverseMask);
         }
@@ -99,7 +99,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         [Fact]
         public void DefineSingleBit0HasZeroShiftAmount()
         {
-            var def = DefineSingleBit(0);
+            var def = Bit(0);
             Assert.Equal(0, def.ShiftAmount);
         }
 
@@ -108,7 +108,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         {
             Assert.Throws<ArgumentOutOfRangeException>("shiftAmount", () =>
             {
-                DefineFromMask(default, -1);
+                FromMask(default, -1);
             });
         }
 
@@ -117,14 +117,14 @@ namespace THNETII.InteropServices.Bitwise.Test
         {
             Assert.Throws<ArgumentOutOfRangeException>("shiftAmount", () =>
             {
-                DefineFromMask(default, BitsInT + 1);
+                FromMask(default, BitsInT + 1);
             });
         }
 
         [Fact]
         public void DefineFromMaskNoBitsHasAllBitsInverseMask()
         {
-            var def = DefineFromMask(NoBitsSet, default);
+            var def = FromMask(NoBitsSet, default);
             Assert.Equal(AllBitsSet, def.InverseMask);
         }
 
@@ -133,7 +133,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         {
             Assert.Throws<ArgumentOutOfRangeException>("count", () =>
             {
-                DefineLowerBits(-1);
+                LowBits(-1);
             });
         }
 
@@ -142,7 +142,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         {
             Assert.Throws<ArgumentOutOfRangeException>("count", () =>
             {
-                DefineLowerBits(BitsInT + 1);
+                LowBits(BitsInT + 1);
             });
         }
 
@@ -151,7 +151,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         {
             Assert.Throws<ArgumentOutOfRangeException>("count", () =>
             {
-                DefineHigherBits(-1);
+                HighBits(-1);
             });
         }
 
@@ -160,7 +160,7 @@ namespace THNETII.InteropServices.Bitwise.Test
         {
             Assert.Throws<ArgumentOutOfRangeException>("count", () =>
             {
-                DefineHigherBits(BitsInT + 1);
+                HighBits(BitsInT + 1);
             });
         }
     }
