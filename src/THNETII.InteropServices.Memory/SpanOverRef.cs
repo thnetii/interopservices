@@ -125,7 +125,7 @@ namespace THNETII.InteropServices.Memory
         /// <param name="reference">A reference to the value to span over.</param>
         /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
         /// <returns>
-        /// A <see cref="Span{T}"/> value with a length of <c>1</c>.
+        /// A <see cref="Span{T}"/> starting at <paramref name="reference"/> with the specified <paramref name="length"/>.
         /// </returns>
         /// <remarks>
         /// <note>
@@ -157,7 +157,7 @@ namespace THNETII.InteropServices.Memory
         /// <param name="reference">A reference to the value to span over.</param>
         /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
         /// <returns>
-        /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
+        /// A <see cref="ReadOnlySpan{T}"/> starting at <paramref name="reference"/> with the specified <paramref name="length"/>.
         /// </returns>
         /// <remarks>
         /// <note>
@@ -178,7 +178,7 @@ namespace THNETII.InteropServices.Memory
             if (IsCreateSpanSupported)
                 return CreateReadOnlySpanUnsafe(reference, length);
             else
-                return GetFixedPointerSpan(ref Unsafe.AsRef(reference), length);
+                return GetFixedPointerReadOnlySpan(reference, length);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace THNETII.InteropServices.Memory
         /// <param name="pinnedHandle">Receives the <see cref="GCHandle"/> that was allocated for pinning <paramref name="container"/>. <see cref="GCHandle.IsAllocated"/> must be checked before calling <see cref="GCHandle.Free"/>.</param>
         /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
         /// <returns>
-        /// A <see cref="Span{T}"/> value with a length of <c>1</c>.
+        /// A <see cref="Span{T}"/> starting at <paramref name="reference"/> with the specified <paramref name="length"/>.
         /// </returns>
         /// <remarks>
         /// If <see cref="IsCreateSpanSupported"/> returns <see langword="true"/>, the runtime
@@ -228,7 +228,7 @@ namespace THNETII.InteropServices.Memory
         /// <param name="pinnedHandle">Receives the <see cref="GCHandle"/> that was allocated for pinning <paramref name="container"/>. <see cref="GCHandle.IsAllocated"/> must be checked before calling <see cref="GCHandle.Free"/>.</param>
         /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
         /// <returns>
-        /// A <see cref="ReadOnlySpan{T}"/> value with a length of <c>1</c>.
+        /// A <see cref="ReadOnlySpan{T}"/> starting at <paramref name="reference"/> with the specified <paramref name="length"/>.
         /// </returns>
         /// <remarks>
         /// If <see cref="IsCreateSpanSupported"/> returns <see langword="true"/>, the runtime
@@ -312,9 +312,59 @@ namespace THNETII.InteropServices.Memory
             public static FixedPointerSpanDelegate<T> Invoke => delegateLazy.Value;
         }
 
+        /// <summary>
+        /// Gets a span constructed from the fixed pointer of the specified
+        /// struct value, optionally, over the values coming after it in
+        /// contiguous memory.
+        /// </summary>
+        /// <typeparam name="T">The type of the item(s) in the returned span.</typeparam>
+        /// <param name="input">A reference to the value to span over.</param>
+        /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
+        /// <returns>
+        /// A <see cref="Span{T}"/> starting at <paramref name="input"/> with the specified <paramref name="length"/>.
+        /// </returns>
+        /// <remarks>
+        /// The value referenced by <paramref name="input"/> will only be fixed
+        /// during construction of the <see cref="Span{T}"/>. Therefore, the
+        /// returned span is only guranteed to remain safe if the value is not
+        /// stored on the managed object heap.
+        /// <para>
+        /// If the executing runtime supports internal pointers, the returned
+        /// Span is guaranteed to remain safe, even if the referred value is
+        /// stored on the managed heap. If <see cref="IsCreateSpanSupported"/>
+        /// returns <see langword="true"/>, this feature <em>should</em> be
+        /// supported.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="GetSpan{T}(ref T, int)"/>
         public static Span<T> GetFixedPointerSpan<T>(ref T input, int length = 1)
             where T : struct => FixedPointerSpanInvoker<T>.Invoke(ref input, length);
 
+        /// <summary>
+        /// Gets a read-only span constructed from the fixed pointer of the
+        /// specified struct value, and optionally, over the values coming after
+        /// it in contiguous memory.
+        /// </summary>
+        /// <typeparam name="T">The type of the item(s) in the returned span.</typeparam>
+        /// <param name="input">A reference to the value to span over.</param>
+        /// <param name="length">The number of elements to span over, defaults to <c>1</c>.</param>
+        /// <returns>
+        /// A <see cref="Span{T}"/> starting at <paramref name="input"/> with the specified <paramref name="length"/>.
+        /// </returns>
+        /// <remarks>
+        /// The value referenced by <paramref name="input"/> will only be fixed
+        /// during construction of the <see cref="Span{T}"/>. Therefore, the
+        /// returned span is only guranteed to remain safe if the value is not
+        /// stored on the managed object heap.
+        /// <para>
+        /// If the executing runtime supports internal pointers, the returned
+        /// Span is guaranteed to remain safe, even if the referred value is
+        /// stored on the managed heap. If <see cref="IsCreateSpanSupported"/>
+        /// returns <see langword="true"/>, this feature <em>should</em> be
+        /// supported.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="GetReadOnlySpan{T}(in T, int)"/>
         public static ReadOnlySpan<T> GetFixedPointerReadOnlySpan<T>(in T input, int length = 1)
             where T : struct => GetFixedPointerSpan(ref Unsafe.AsRef(input), length);
     }
