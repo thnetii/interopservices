@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace THNETII.InteropServices.Bitwise
 {
@@ -7,6 +8,7 @@ namespace THNETII.InteropServices.Bitwise
     /// </summary>
     public static class Bitmask
     {
+        [SuppressMessage("Globalization", "CA1303: Do not pass literals as localized parameters")]
         internal static class ThrowHelpers
         {
             internal static void ThrowForCount(int count, int bitSize, int offset = 0)

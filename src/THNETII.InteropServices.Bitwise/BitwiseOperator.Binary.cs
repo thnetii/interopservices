@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.Bitwise
@@ -26,6 +27,7 @@ namespace THNETII.InteropServices.Bitwise
             }
         }
 
+        [SuppressMessage("Globalization", "CA1303: Do not pass literals as localized parameters")]
         private static void Binary<T>(ReadOnlySpan<T> left, ReadOnlySpan<T> right, Span<T> destination,
             Func<uint, uint, uint> op32Bits, Func<ulong, ulong, ulong> op64Bits,
             Func<ushort, ushort, ushort> op16Bits, Func<byte, byte, byte> op8Bits)
@@ -73,7 +75,7 @@ namespace THNETII.InteropServices.Bitwise
             else if (bytesRemaining >= sizeof(ulong))
             {
                 PrimitiveBinaryUnguarded(ref byteOffset, left, right, result,
-                    op64Bits, ref bytesRemaining); 
+                    op64Bits, ref bytesRemaining);
             }
 
             // 32-Bits
@@ -82,7 +84,7 @@ namespace THNETII.InteropServices.Bitwise
             else if (bytesRemaining >= sizeof(uint))
             {
                 PrimitiveBinaryUnguarded(ref byteOffset, left, right, result,
-                    op32Bits, ref bytesRemaining); 
+                    op32Bits, ref bytesRemaining);
             }
 
             // 16-Bits
@@ -91,7 +93,7 @@ namespace THNETII.InteropServices.Bitwise
             else if (bytesRemaining >= sizeof(ushort))
             {
                 PrimitiveBinaryUnguarded(ref byteOffset, left, right, result,
-                    op16Bits, ref bytesRemaining); 
+                    op16Bits, ref bytesRemaining);
             }
 
             // 8-Bits
@@ -100,7 +102,7 @@ namespace THNETII.InteropServices.Bitwise
             else if (bytesRemaining >= sizeof(byte))
             {
                 PrimitiveBinaryUnguarded(ref byteOffset, left, right, result,
-                    op8Bits, ref bytesRemaining); 
+                    op8Bits, ref bytesRemaining);
             }
         }
 

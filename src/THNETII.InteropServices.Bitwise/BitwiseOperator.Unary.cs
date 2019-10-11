@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.Bitwise
@@ -20,6 +21,7 @@ namespace THNETII.InteropServices.Bitwise
             }
         }
 
+        [SuppressMessage("Globalization", "CA1303: Do not pass literals as localized parameters")]
         private static void Unary<T>(ReadOnlySpan<T> operand, Span<T> destination,
             Func<uint, uint> op32Bits, Func<ulong, ulong> op64Bits,
             Func<ushort, ushort> op16Bits, Func<byte, byte> op8Bits)
