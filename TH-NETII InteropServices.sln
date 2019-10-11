@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FD6592C7-7106-44D5-A2D2-EEC705A3DBBB}"
 	ProjectSection(SolutionItems) = preProject
@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		.gitmodules = .gitmodules
 		Directory.Build.props = Directory.Build.props
+		Directory.Meta.props = Directory.Meta.props
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
@@ -21,9 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.InteropServices.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.InteropServices.Bitwise", "src\THNETII.InteropServices.Bitwise\THNETII.InteropServices.Bitwise.csproj", "{F521C542-DBAA-4D2D-B788-F9BB6B3C6A93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THNETII.InteropServices.NetCoreApp11.Test", "test\THNETII.InteropServices.NetCoreApp11.Test\THNETII.InteropServices.NetCoreApp11.Test.csproj", "{C2831145-DE49-4BC6-9E5E-9BFEA105B6A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.InteropServices.NetCoreApp11.Test", "test\THNETII.InteropServices.NetCoreApp11.Test\THNETII.InteropServices.NetCoreApp11.Test.csproj", "{C2831145-DE49-4BC6-9E5E-9BFEA105B6A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THNETII.InteropServices.Memory", "src\THNETII.InteropServices.Memory\THNETII.InteropServices.Memory.csproj", "{6E0EBC43-C4C9-4EBB-A677-8924F7C25B2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "THNETII.InteropServices.Memory", "src\THNETII.InteropServices.Memory\THNETII.InteropServices.Memory.csproj", "{6E0EBC43-C4C9-4EBB-A677-8924F7C25B2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
