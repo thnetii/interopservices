@@ -18,5 +18,4 @@ jobs:
   parameters:
     presteps:
     - checkout:   self
-      fetchDepth: 1
       submodules: true
