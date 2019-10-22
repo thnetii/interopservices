@@ -169,6 +169,9 @@ namespace THNETII.InteropServices.Memory
         /// <exception cref="PlatformNotSupportedException" />
         public static string MarshalAsAutoString(this IntPtr ptr)
         {
+#if !NETSTANDARD1_3 && !NETSTANDARD1_6
+            return Marshal.PtrToStringAuto(ptr);
+#else // < NETSTANDARD2
             switch (Marshal.SystemDefaultCharSize)
             {
                 case 0: return null;
@@ -176,6 +179,7 @@ namespace THNETII.InteropServices.Memory
                 case 2: return ptr.MarshalAsUnicodeString();
                 default: throw new PlatformNotSupportedException($"System Default Char size of {Marshal.SystemDefaultCharSize} bytes is not supported.");
             }
+#endif
         }
 
         /// <summary>
@@ -190,6 +194,9 @@ namespace THNETII.InteropServices.Memory
         /// <exception cref="PlatformNotSupportedException" />
         public static string MarshalAsAutoString(this IntPtr ptr, int length)
         {
+#if !NETSTANDARD1_3 && !NETSTANDARD1_6
+            return Marshal.PtrToStringAuto(ptr, length);
+#else // < NETSTANDARD2
             switch (Marshal.SystemDefaultCharSize)
             {
                 case 0: return null;
@@ -197,6 +204,7 @@ namespace THNETII.InteropServices.Memory
                 case 2: return ptr.MarshalAsUnicodeString(length);
                 default: throw new PlatformNotSupportedException($"System Default Char size of {Marshal.SystemDefaultCharSize} bytes is not supported.");
             }
+#endif
         }
 
 #if NETSTANDARD1_3 || NETSTANDARD1_6
