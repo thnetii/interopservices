@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace THNETII.InteropServices.Memory
@@ -124,10 +125,13 @@ namespace THNETII.InteropServices.Memory
         /// A structure value with the value of <paramref name="ptr"/> blitted
         /// to the first bytes of the structure.
         /// </returns>
-        public static T Create<T>(IntPtr ptr) where T : unmanaged, IPointer
+        public static T Create<T>(IntPtr ptr) where T : struct, IPointer
         {
-            PointerBlit<T> blit = new PointerBlit<T> { ptr = ptr };
-            return blit.@struct;
+            var @struct = default(T);
+            var ptrSpan = MemoryMarshal.Cast<T, IntPtr>(SpanOverRef.GetSpan(ref @struct));
+            ptrSpan[0] = ptr;
+
+            return @struct;
         }
 
         /// <summary>
