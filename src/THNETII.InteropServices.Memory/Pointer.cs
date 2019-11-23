@@ -134,6 +134,10 @@ namespace THNETII.InteropServices.Memory
             return @struct;
         }
 
+        /// <inheritdoc cref="Create{T}(IntPtr)"/>
+        public static unsafe T Create<T>(void* ptr) where T : struct, IPointer =>
+            Create<T>(new IntPtr(ptr));
+
         /// <summary>
         /// Checks whether a pointer represents <see langword="null"/>.
         /// </summary>
