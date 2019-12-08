@@ -11,7 +11,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <PropertyGroup Label="BasePath">
     <BaseOutputPath>$(MSBuildThisFileDirectory)bin\</BaseOutputPath>
@@ -21,6 +22,12 @@
     <Features>IOperation</Features>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <Import Label="Version"
+          Condition="
+          '$(VersionPrefix)'=='' and
+          Exists('$(MSBuildThisFileDirectory)Directory.Version.props')
+          "
+          Project="$(MSBuildThisFileDirectory)Directory.Version.props"/>
   <PropertyGroup Label="Version" Condition="'$(VersionPrefix)'!=''">
     <FileVersion>$(VersionPrefix)</FileVersion>
     <AssemblyVersion>$(FileVersion)</AssemblyVersion>
