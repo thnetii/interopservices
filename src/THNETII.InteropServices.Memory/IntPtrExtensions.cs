@@ -207,11 +207,22 @@ namespace THNETII.InteropServices.Memory
 #endif
         }
 
-#if NETSTANDARD1_3 || NETSTANDARD1_6
-        /// <exception cref="OverflowException"/>
+        /// <summary>
+        /// Interprets a pointer as a span of values of type
+        /// <typeparamref name="T"/> that ends at the first occurrence of the
+        /// default value of <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="ptr">A pointer to <c><see langword="default"/>(<typeparamref name="T"/>)</c> terminated data.</param>
+        /// <returns>A span starting at <paramref name="ptr"/> and spanning up to, but excluding the first occurence of <c><see langword="default"/>(<typeparamref name="T"/>).</c></returns>
+        /// <remarks>
+        /// The returned span is limited to a maximum size of <see cref="int.MaxValue"/> bytes.
+        /// Passing a pointer to a larger, non-terminated memory area will raise an <see cref="OverflowException"/>.
+        /// </remarks>
+        /// <exception cref="OverflowException">No terminating value within the first (2^31 - 1) values found.</exception>
         [SuppressMessage("Usage", "PC001: API not supported on all platforms", Justification = "https://github.com/dotnet/platform-compat/issues/123")]
-        private static unsafe Span<T> ToDefaultDelimitedSpan<T>(this IntPtr ptr)
+        public static unsafe Span<T> ToDefaultTerminatedSpan<T>(this IntPtr ptr)
             where T : struct, IEquatable<T>
+#if NETSTANDARD1_3 || NETSTANDARD1_6
         {
             if (ptr == IntPtr.Zero)
                 return Span<T>.Empty;
@@ -227,9 +238,6 @@ namespace THNETII.InteropServices.Memory
             return maxSpan.Slice(start: 0, length);
         }
 #else // !NETSTANDARD1_3 && !NETSTANDARD1_6
-        /// <exception cref="OverflowException"/>
-        private static unsafe Span<T> ToDefaultDelimitedSpan<T>(this IntPtr ptr)
-            where T : struct, IEquatable<T>
         {
             if (ptr == IntPtr.Zero)
                 return Span<T>.Empty;
@@ -274,7 +282,7 @@ namespace THNETII.InteropServices.Memory
         /// </remarks>
         /// <exception cref="OverflowException">No null-terminating byte within the first (2^31 - 1) bytes found.</exception>
         public static Span<byte> ToZeroTerminatedByteSpan(this IntPtr ptr) =>
-            ToDefaultDelimitedSpan<byte>(ptr);
+            ToDefaultTerminatedSpan<byte>(ptr);
 
         /// <summary>
         /// Interprets a Unicode UTF-16 string pointer (<c>PWSTR</c>, <c>LPWSTR</c> or <c>wchar_t</c> pointer in C) as
@@ -293,6 +301,6 @@ namespace THNETII.InteropServices.Memory
         /// </remarks>
         /// <exception cref="OverflowException">No null-terminating character within the first (2^31 - 1) characters found.</exception>
         public static Span<char> ToZeroTerminatedUnicodeSpan(this IntPtr ptr) =>
-            ToDefaultDelimitedSpan<char>(ptr);
+            ToDefaultTerminatedSpan<char>(ptr);
     }
 }
