@@ -100,6 +100,12 @@ namespace THNETII.InteropServices.Memory
     public interface IConstTerminatedAutoStringPointer : IConstAutoStringPointer { }
 
     /// <summary>
+    /// Interface for storing marshalled function pointers.
+    /// </summary>
+    /// <typeparam name="T">An unmanaged delegate type, typically attributed with the <see cref="UnmanagedFunctionPointerAttribute"/>.</typeparam>
+    public interface IFunctionPointer<T> : IPointer where T : Delegate { }
+
+    /// <summary>
     /// Static helper class that provides extension methods for the default pointer interface types.
     /// </summary>
     public static class Pointer
@@ -438,6 +444,37 @@ namespace THNETII.InteropServices.Memory
         public static string MarshalToString<TPtr>(this TPtr ptr)
             where TPtr : struct, IConstTerminatedAutoStringPointer =>
             ptr.Pointer.MarshalAsAutoString();
+    }
+
+    /// <summary>
+    /// Static helper class that provides extension methods for function pointer interface types.
+    /// </summary>
+    public static class FunctionPointer
+    {
+        /// <summary>
+        /// Creates a function pointer from the specified delegate value.
+        /// </summary>
+        /// <typeparam name="TPtr">The structural type to store the marshalled function pointer.</typeparam>
+        /// <typeparam name="TProc">An unmanaged delegate type, typically attributed with the <see cref="UnmanagedFunctionPointerAttribute"/>.</typeparam>
+        /// <param name="proc">The delegate to be marshalled to a function pointer.</param>
+        /// <returns>A pointer structure storing the value of the marshalled pointer.</returns>
+        /// <remarks>If <paramref name="proc"/> is <see langword="null"/>, the returned pointer has a value of <see cref="IntPtr.Zero"/>.</remarks>
+        public static TPtr Create<TPtr, TProc>(TProc proc)
+            where TProc : Delegate
+            where TPtr : struct, IFunctionPointer<TProc> =>
+            Pointer.Create<TPtr>(proc is null ? IntPtr.Zero : Marshal.GetFunctionPointerForDelegate(proc));
+
+        /// <summary>
+        /// Gets a managed invocable delegate from a previously marshalled unmanaged function pointer.
+        /// </summary>
+        /// <typeparam name="TPtr">The structural type to store the marshalled function pointer.</typeparam>
+        /// <typeparam name="TProc">An unmanaged delegate type, typically attributed with the <see cref="UnmanagedFunctionPointerAttribute"/>.</typeparam>
+        /// <param name="ptr">The function pointer structure storing the unmanaged function pointer.</param>
+        /// <returns>A <typeparamref name="TProc"/> delegate instance or <see langword="null"/> if <paramref name="ptr"/> has a <see cref="IntPtr.Zero"/> value.</returns>
+        public static TProc GetDelegate<TPtr, TProc>(this TPtr ptr)
+            where TProc : Delegate
+            where TPtr : struct, IFunctionPointer<TProc> =>
+            ptr.HasValue() ? Marshal.GetDelegateForFunctionPointer<TProc>(ptr.Pointer) : null;
     }
 
     /// <summary>
