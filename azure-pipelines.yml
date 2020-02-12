@@ -16,6 +16,11 @@ resources:
 jobs:
 - template: templates/dotnetcore/azure-pipelines.yml@templates
   parameters:
-    presteps:
+    checkout:
     - checkout:   self
       submodules: true
+    presteps:
+    - task: UseDotNet@2
+      displayName:  Use .NET Core SDK version 3.x
+      inputs:
+        version:    3.x
