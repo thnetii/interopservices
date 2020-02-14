@@ -21,6 +21,10 @@ jobs:
       submodules: true
     presteps:
     - task: UseDotNet@2
+      displayName:  Use .NET Core SDK version 2.1.x
+      inputs:
+        version:    2.1.x
+    - task: UseDotNet@2
       displayName:  Use .NET Core SDK version 3.x
       inputs:
         version:    3.x
