@@ -1,4 +1,4 @@
-﻿namespace THNETII.InteropServices.Bitwise.Test
+namespace THNETII.InteropServices.Bitwise.Test
 {
     public class Bitfield32Test : BitfieldTest<uint>
     {

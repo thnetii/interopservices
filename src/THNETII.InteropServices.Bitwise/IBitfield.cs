@@ -1,4 +1,4 @@
-﻿namespace THNETII.InteropServices.Bitwise
+namespace THNETII.InteropServices.Bitwise
 {
     /// <summary>
     /// Specifies a bitfield definition for a specific underlying storage type.

@@ -1,4 +1,4 @@
-﻿namespace THNETII.InteropServices.Bitwise.Test
+namespace THNETII.InteropServices.Bitwise.Test
 {
     public class Bitmask08BitsTest : BitmaskTest<byte>
     {
